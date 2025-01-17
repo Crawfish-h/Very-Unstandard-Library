@@ -5,6 +5,8 @@
 #include "../Utility.h"
 #include "../TObject.h"
 
+typedef struct TRtti TRtti;
+
 typedef struct TArray
 {
     TGeneric;

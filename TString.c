@@ -1,6 +1,7 @@
 #include "TString.h"
 #include "TGeneric.h"
 #include <stdarg.h>
+#include "Reflection.h"
 
 bool TString_Equal(TString str_0, TString str_1)
 {

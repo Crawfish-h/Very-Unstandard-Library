@@ -5,6 +5,7 @@ project(VUTD)
 add_executable(
     ${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/Main.c
+    ${PROJECT_SOURCE_DIR}/Reflection.h
     ${PROJECT_SOURCE_DIR}/Utility.h
     ${PROJECT_SOURCE_DIR}/Utility.c
     ${PROJECT_SOURCE_DIR}/TGeneric.h

@@ -4,6 +4,8 @@
 #include "TString.h"
 #include "Utility.h"
 
+typedef struct TRtti TRtti;
+
 typedef struct TGeneric
 {
     TObject* Super;

@@ -1,6 +1,7 @@
 #include "TArray.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include "../Reflection.h"
 
 TArray TArray_Init(TRtti rtti, size_t size, void* array)
 {

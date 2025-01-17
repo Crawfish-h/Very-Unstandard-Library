@@ -1,6 +1,7 @@
 #include "TVector.h"
 #include <stdarg.h>
 #include <stdlib.h>
+#include "../Reflection.h"
 
 void TVector_Init(TVector* vector, const size_t capcity, const size_t type_Count, ...)
 {
