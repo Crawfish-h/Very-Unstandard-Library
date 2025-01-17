@@ -1,0 +1,3 @@
+J:/My Files/Code/Very Unstandard Library/build/CMakeFiles/VUTD.dir
+J:/My Files/Code/Very Unstandard Library/build/CMakeFiles/edit_cache.dir
+J:/My Files/Code/Very Unstandard Library/build/CMakeFiles/rebuild_cache.dir

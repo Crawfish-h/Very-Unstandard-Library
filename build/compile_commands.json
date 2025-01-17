@@ -1,0 +1,50 @@
+[
+{
+  "directory": "J:/My Files/Code/Very Unstandard Library/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -g -std=gnu2x -fms-extensions -o CMakeFiles\\VUTD.dir\\Main.c.obj -c \"J:\\My Files\\Code\\Very Unstandard Library\\Main.c\"",
+  "file": "J:\\My Files\\Code\\Very Unstandard Library\\Main.c",
+  "output": "CMakeFiles\\VUTD.dir\\Main.c.obj"
+},
+{
+  "directory": "J:/My Files/Code/Very Unstandard Library/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -g -std=gnu2x -fms-extensions -o CMakeFiles\\VUTD.dir\\Utility.c.obj -c \"J:\\My Files\\Code\\Very Unstandard Library\\Utility.c\"",
+  "file": "J:\\My Files\\Code\\Very Unstandard Library\\Utility.c",
+  "output": "CMakeFiles\\VUTD.dir\\Utility.c.obj"
+},
+{
+  "directory": "J:/My Files/Code/Very Unstandard Library/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -g -std=gnu2x -fms-extensions -o CMakeFiles\\VUTD.dir\\TGeneric.c.obj -c \"J:\\My Files\\Code\\Very Unstandard Library\\TGeneric.c\"",
+  "file": "J:\\My Files\\Code\\Very Unstandard Library\\TGeneric.c",
+  "output": "CMakeFiles\\VUTD.dir\\TGeneric.c.obj"
+},
+{
+  "directory": "J:/My Files/Code/Very Unstandard Library/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -g -std=gnu2x -fms-extensions -o CMakeFiles\\VUTD.dir\\TObject.c.obj -c \"J:\\My Files\\Code\\Very Unstandard Library\\TObject.c\"",
+  "file": "J:\\My Files\\Code\\Very Unstandard Library\\TObject.c",
+  "output": "CMakeFiles\\VUTD.dir\\TObject.c.obj"
+},
+{
+  "directory": "J:/My Files/Code/Very Unstandard Library/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -g -std=gnu2x -fms-extensions -o CMakeFiles\\VUTD.dir\\TString.c.obj -c \"J:\\My Files\\Code\\Very Unstandard Library\\TString.c\"",
+  "file": "J:\\My Files\\Code\\Very Unstandard Library\\TString.c",
+  "output": "CMakeFiles\\VUTD.dir\\TString.c.obj"
+},
+{
+  "directory": "J:/My Files/Code/Very Unstandard Library/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -g -std=gnu2x -fms-extensions -o CMakeFiles\\VUTD.dir\\Containers\\TArray.c.obj -c \"J:\\My Files\\Code\\Very Unstandard Library\\Containers\\TArray.c\"",
+  "file": "J:\\My Files\\Code\\Very Unstandard Library\\Containers\\TArray.c",
+  "output": "CMakeFiles\\VUTD.dir\\Containers\\TArray.c.obj"
+},
+{
+  "directory": "J:/My Files/Code/Very Unstandard Library/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -g -std=gnu2x -fms-extensions -o CMakeFiles\\VUTD.dir\\Containers\\TTuple.c.obj -c \"J:\\My Files\\Code\\Very Unstandard Library\\Containers\\TTuple.c\"",
+  "file": "J:\\My Files\\Code\\Very Unstandard Library\\Containers\\TTuple.c",
+  "output": "CMakeFiles\\VUTD.dir\\Containers\\TTuple.c.obj"
+},
+{
+  "directory": "J:/My Files/Code/Very Unstandard Library/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe -g -std=gnu2x -fms-extensions -o CMakeFiles\\VUTD.dir\\Containers\\TVector.c.obj -c \"J:\\My Files\\Code\\Very Unstandard Library\\Containers\\TVector.c\"",
+  "file": "J:\\My Files\\Code\\Very Unstandard Library\\Containers\\TVector.c",
+  "output": "CMakeFiles\\VUTD.dir\\Containers\\TVector.c.obj"
+}
+]

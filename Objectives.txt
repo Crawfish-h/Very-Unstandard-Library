@@ -1,0 +1,29 @@
+Create:
+Dynaimc String
+TString  X
+String functions with length var instead of null terminator
+tuple
+Swap
+Move
+Copy
+Type infomation
+Generics  X
+Templates (keeps pointers to all varibles with the template is its type. Uses a static array of user defined length to do this)
+variant
+Pair
+Array
+Stack (container adapter, not a container)
+Deque (container adapter, not a container)
+Weak_Ptr
+Unique_Ptr
+Vector
+Queue
+Map interface
+Tree Map
+Hash Map
+Set
+List
+Array Slicing
+operator overloading using macros
+Generic can store ptr to ctor and dtor.
+All containers should run 

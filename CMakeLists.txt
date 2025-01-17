@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.28.1)
+
+project(VUTD)
+
+add_executable(
+    ${PROJECT_NAME}
+    ${PROJECT_SOURCE_DIR}/Main.c
+    ${PROJECT_SOURCE_DIR}/Utility.h
+    ${PROJECT_SOURCE_DIR}/Utility.c
+    ${PROJECT_SOURCE_DIR}/TGeneric.h
+    ${PROJECT_SOURCE_DIR}/TGeneric.c
+    ${PROJECT_SOURCE_DIR}/TObject.h
+    ${PROJECT_SOURCE_DIR}/TObject.c
+    ${PROJECT_SOURCE_DIR}/Vutd_Macros.h
+    ${PROJECT_SOURCE_DIR}/TString.h
+    ${PROJECT_SOURCE_DIR}/TString.c
+    ${PROJECT_SOURCE_DIR}/Containers/TContainer.h
+    ${PROJECT_SOURCE_DIR}/Containers/TArray.h
+    ${PROJECT_SOURCE_DIR}/Containers/TArray.c
+    ${PROJECT_SOURCE_DIR}/Containers/TTuple.h
+    ${PROJECT_SOURCE_DIR}/Containers/TTuple.c
+    ${PROJECT_SOURCE_DIR}/Containers/TVector.h
+    ${PROJECT_SOURCE_DIR}/Containers/TVector.c
+)
+
+target_compile_options(${PROJECT_NAME} PRIVATE -fms-extensions)
+set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 23)
