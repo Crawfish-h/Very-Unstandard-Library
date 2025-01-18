@@ -1,6 +1,7 @@
 #include "TTuple.h"
 #include <stdarg.h>
 #include "TArray.h"
+#include "../Reflection.h"
 
 
 void TTuple_Ctor(TTuple* tuple, const size_t size, ...)

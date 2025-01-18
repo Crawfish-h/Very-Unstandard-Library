@@ -3,8 +3,7 @@
 #include <stddef.h>
 #include "TString.h"
 #include "Utility.h"
-
-typedef struct TRtti TRtti;
+#include "Reflection.h"
 
 typedef struct TGeneric
 {

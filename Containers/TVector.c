@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "../Reflection.h"
 
+TVector Memory_Pool;
+
 void TVector_Init(TVector* vector, const size_t capcity, const size_t type_Count, ...)
 {
     va_list va_Args;
@@ -57,4 +59,10 @@ void TVector_Multi(TVector* vector, const size_t value_Count, ...)
 void TVector_Push(TVector* vector, TGeneric value)
 {
     TVector_Multi(vector, 1, value);
+}
+
+void Memory_Push()
+{
+    
+    TVector_Multi(&Memory_Pool, 1, );
 }

@@ -15,6 +15,9 @@ typedef struct TVector
     size_t Type_Capacity_;
 } TVector;
 
+extern TVector Memory_Pool;
+
+
 // Initializes a [TVector]. Can only initialize [TVectors] with types, no values.
 // types of all [...] arguments should be a TString. 
 void TVector_Init(TVector* vector, const size_t capcity, const size_t type_Count, ...);
@@ -23,3 +26,4 @@ void TVector_Init(TVector* vector, const size_t capcity, const size_t type_Count
 // Types of all [...] arguments should be a TGeneric. 
 void TVector_Multi(TVector* vector, const size_t value_Count, ...);
 void TVector_Push(TVector* vector, TGeneric value);
+void Memory_Push();

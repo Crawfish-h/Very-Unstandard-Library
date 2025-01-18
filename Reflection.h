@@ -2,11 +2,21 @@
 #include "TString.h"
 #include "Utility.h"
 
+typedef struct TArray TArray;
+
 typedef struct TRtti
 {
     TString Type;
     size_t Size_Of;
 } TRtti;
+
+typedef struct TMethod
+{
+    TString Name;
+    TArray* Args; // Array of TRtti.
+    TRtti Return_Type;
+    TString Attributes;
+} TMethod;
 
 // Returns runtime type information. 
 // [check] exists so that if a nonexistant variable is passed to it, it will generate an error.

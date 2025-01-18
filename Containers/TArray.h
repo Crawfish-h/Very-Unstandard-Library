@@ -4,8 +4,8 @@
 #include "../TString.h"
 #include "../Utility.h"
 #include "../TObject.h"
+#include "../Reflection.h"
 
-typedef struct TRtti TRtti;
 
 typedef struct TArray
 {

@@ -52,4 +52,4 @@ typedef TGeneric (*Generic_Function)(int arg_Count, ...);
         #define false	0
     #endif
 
-void* Valloc(TObject* object, size_t size);
+void* Valloc(size_t size);
