@@ -23,7 +23,7 @@ extern TVector Memory_Pool;
 void TVector_Init(TVector* vector, const size_t capcity, const size_t type_Count, ...);
 
 // Pushes a value to a [TVector].
-// Types of all [...] arguments should be a TGeneric. 
+// Types of all [...] arguments should be a [TGeneric*]. 
 void TVector_Multi(TVector* vector, const size_t value_Count, ...);
-void TVector_Push(TVector* vector, TGeneric value);
+void TVector_Push(TVector* vector, TGeneric* value);
 void Memory_Push();

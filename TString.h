@@ -16,6 +16,12 @@ typedef struct TString
 #define NT_TString(n_String) \
     (TString){ .Str = n_String, .Size = (sizeof(n_String) / sizeof(n_String[0])) - 1 }
 
-bool TString_Equal(TString str_0, TString str_1);
+bool TString_Equal(TString* str_0, TString* str_1);
+bool TString_Equal_N(TString* str_0, TString* str_1, size_t n);
+
+// Returns true if [string.Str] contains [sub.Str].
+TString TString_Str_Str(TString* string, TString* sub_String); 
+
+
 TGeneric TString_Equal_Overload(int arg_Count, ...);
 

@@ -15,7 +15,7 @@ void Defualt_Dtor(TGeneric* arg)
 
 void Defualt_Move(TGeneric* move_To, TGeneric* move_From)
 {
-    if (TString_Equal(move_To->Rtti_.Type, move_From->Rtti_.Type) == false)
+    if (TString_Equal(&move_To->Rtti_.Type, &move_From->Rtti_.Type) == false)
     {
         fprintf(stderr, "ERROR: in [Defualt_Copy], [arg_0->Type] does not equal [arg_1->Type].");
         exit(EXIT_FAILURE);
@@ -37,7 +37,7 @@ void Defualt_Move(TGeneric* move_To, TGeneric* move_From)
 // [copy_To->Data] will be allocated if [copy_From->Is_Allocated] is true.
 void Defualt_Copy(TGeneric* copy_To, TGeneric* copy_From)
 {
-    if (TString_Equal(copy_To->Rtti_.Type, copy_From->Rtti_.Type) == false)
+    if (TString_Equal(&copy_To->Rtti_.Type, &copy_From->Rtti_.Type) == false)
     {
         fprintf(stderr, "ERROR: in [Defualt_Copy], [arg_0->Type] does not equal [arg_1->Type].");
         exit(EXIT_FAILURE);
@@ -57,7 +57,7 @@ void Defualt_Copy(TGeneric* copy_To, TGeneric* copy_From)
 // [copy_To->Data] will be allocated if [copy_From->Is_Allocated] is true.
 void Defualt_Set_Equal(TGeneric* old_Value, TGeneric* new_Value)
 {
-    if (TString_Equal(old_Value->Rtti_.Type, new_Value->Rtti_.Type) == false)
+    if (TString_Equal(&old_Value->Rtti_.Type, &new_Value->Rtti_.Type) == false)
     {
         fprintf(stderr, "ERROR: in [Defualt_Copy], [arg_0->Type] does not equal [arg_1->Type].");
         exit(EXIT_FAILURE);

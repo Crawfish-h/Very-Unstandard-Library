@@ -32,8 +32,8 @@ void TVector_Multi(TVector* vector, const size_t value_Count, ...)
     for (size_t i = 0; i < value_Count; i++)
     {
         vector->Size_++;
-        TGeneric pushed_Value = va_arg(va_Args, TGeneric);
-        Type_Check(pushed_Value.Rtti_.Type, vector->Types_, vector->Type_Count_);
+        TGeneric* pushed_Value = va_arg(va_Args, TGeneric*);
+        Type_Check(&pushed_Value->Rtti_.Type, vector->Types_, vector->Type_Count_);
         if (vector->Size_ == vector->Capacity_)
         {
             vector->Capacity_ *= 2;
@@ -50,19 +50,19 @@ void TVector_Multi(TVector* vector, const size_t value_Count, ...)
             }
         }
 
-        vector->Elements_[vector->Size_ - 1] = pushed_Value;
+        vector->Elements_[vector->Size_ - 1] = *pushed_Value;
     }
 
     va_end(va_Args);
 }
 
-void TVector_Push(TVector* vector, TGeneric value)
+void TVector_Push(TVector* vector, TGeneric* value)
 {
     TVector_Multi(vector, 1, value);
 }
 
 void Memory_Push()
 {
-    
-    TVector_Multi(&Memory_Pool, 1, );
+
+    //TVector_Multi(&Memory_Pool, 1, );
 }
