@@ -23,3 +23,8 @@ void TVector_Init(TVector* vector, const size_t capcity, const size_t type_Count
 // Types of all [...] arguments should be a [TGeneric*]. 
 void TVector_Multi(TVector* vector, const size_t value_Count, ...);
 void TVector_Push(TVector* vector, TGeneric* value);
+void TVector_Pop(TVector* vector); // Removes the last element in the vector and frees it if it was allocated.
+TGeneric TVector_Pop1(TVector* vector); // Removes the last element in the vector and returns it.
+void TVector_Free(TVector* vector);
+void TVector_Remove_At(TVector* vector, ssize_t index); // Removes the element at [index] and frees it if it was allocated.
+TGeneric TVector_Remove_At1(TVector* vector, ssize_t index); // Removes the element at [index] and returns it.

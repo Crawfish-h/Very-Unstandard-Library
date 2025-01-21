@@ -18,3 +18,8 @@ void* Valloc(size_t size)
     TVector_Push(&latest_Pool, &gen);
     return latest_Pool.Elements_[latest_Pool.Size_ - 1].Data;
 }
+
+void Memory_Free()
+{
+    
+}

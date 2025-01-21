@@ -1,6 +1,7 @@
 #include "TVector.h"
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "../Reflection.h"
 
@@ -51,16 +52,13 @@ void TVector_Multi(TVector* vector, const size_t value_Count, ...)
             }
         }
 
-        if (Is_Pointer(pushed_Value->Rtti_) == true)
-        {
-            vector->Elements_[vector->Size_ - 1].Data = pushed_Value->Data;
-        }else
+        vector->Elements_[vector->Size_ - 1] = *pushed_Value;
+        if (Is_Pointer(pushed_Value->Rtti_) == false)
         {
             vector->Elements_[vector->Size_ - 1].Data = calloc(1, pushed_Value->Rtti_.Size_Of);
             vector->Elements_[vector->Size_ - 1].Is_Allocated = true;
             memcpy(vector->Elements_[vector->Size_ - 1].Data, pushed_Value->Data, pushed_Value->Rtti_.Size_Of);
         }
-        
     }
 
     va_end(va_Args);
@@ -69,4 +67,82 @@ void TVector_Multi(TVector* vector, const size_t value_Count, ...)
 void TVector_Push(TVector* vector, TGeneric* value)
 {
     TVector_Multi(vector, 1, value);
+}
+
+void TVector_Pop(TVector* vector)
+{
+    if (vector->Elements_[vector->Size_ - 1].Is_Allocated == true)
+    {
+        free(vector->Elements_[vector->Size_ - 1].Data);
+        vector->Elements_[vector->Size_ - 1] = (TGeneric){ NULL };
+    }
+
+    vector->Size_--;
+}
+
+TGeneric TVector_Pop1(TVector* vector)
+{
+    TGeneric return_Gen = vector->Elements_[vector->Size_ - 1];
+    vector->Elements_[vector->Size_ - 1] = (TGeneric){ NULL };
+    vector->Size_--;
+    return return_Gen;
+}
+
+void TVector_Free(TVector* vector)
+{
+    for (size_t i = 0; i < vector->Size_; i++)
+    {
+        if (vector->Elements_[i].Is_Allocated == true)
+        {
+            free(vector->Elements_[i].Data);
+        }
+    }
+
+    free(vector->Elements_);
+}
+
+TGeneric TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Allocated)
+{
+    if (index > vector->Size_ - 1)
+    {
+        fprintf(stderr, "ERROR: vector index out of range. Index argument: %lld. Vector size: %zu.\n", index, vector->Size_);
+        exit(EXIT_FAILURE);
+    }
+
+    size_t initial_Index = 0;
+    int index_Change = 1;
+    if (index < 0)
+    {
+        initial_Index = vector->Size_ - index;
+        index_Change = -1;
+    }
+
+    for (size_t i = initial_Index; i < vector->Size_;)
+    {
+        if (i == index)
+        {
+            TGeneric return_Gen = vector->Elements_[i];
+
+            if (vector->Elements_[i].Is_Allocated == true && free_Allocated == true)
+            {
+                free(vector->Elements_[i].Data);
+            }
+
+            vector->Size_--;
+            vector->Elements_[i] = (TGeneric){ NULL };
+            return return_Gen;
+        }
+
+        i += index_Change;
+    }
+}
+
+void TVector_Remove_At(TVector* vector, ssize_t index)
+{
+    TVector_Remove_At_Internal(vector, index, true);
+}
+
+TGeneric TVector_Remove_At1(TVector* vector, ssize_t index)
+{
+    TVector_Remove_At_Internal(vector, index, false);
 }
