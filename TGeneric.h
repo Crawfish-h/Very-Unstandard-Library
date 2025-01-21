@@ -12,7 +12,6 @@ typedef struct TGeneric
     bool Is_Allocated;
     TRtti Rtti_;
     void* Data;
-    size_t Size_Of;
 } TGeneric;
 
 TGeneric TGeneric_Init(void* data, TRtti rtti, TObject* super);

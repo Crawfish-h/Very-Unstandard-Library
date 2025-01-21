@@ -1,9 +1,10 @@
 #include "TVector.h"
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../Reflection.h"
 
-TVector Memory_Pool;
+
 
 void TVector_Init(TVector* vector, const size_t capcity, const size_t type_Count, ...)
 {
@@ -50,7 +51,16 @@ void TVector_Multi(TVector* vector, const size_t value_Count, ...)
             }
         }
 
-        vector->Elements_[vector->Size_ - 1] = *pushed_Value;
+        if (Is_Pointer(pushed_Value->Rtti_) == true)
+        {
+            vector->Elements_[vector->Size_ - 1].Data = pushed_Value->Data;
+        }else
+        {
+            vector->Elements_[vector->Size_ - 1].Data = calloc(1, pushed_Value->Rtti_.Size_Of);
+            vector->Elements_[vector->Size_ - 1].Is_Allocated = true;
+            memcpy(vector->Elements_[vector->Size_ - 1].Data, pushed_Value->Data, pushed_Value->Rtti_.Size_Of);
+        }
+        
     }
 
     va_end(va_Args);
@@ -59,10 +69,4 @@ void TVector_Multi(TVector* vector, const size_t value_Count, ...)
 void TVector_Push(TVector* vector, TGeneric* value)
 {
     TVector_Multi(vector, 1, value);
-}
-
-void Memory_Push()
-{
-
-    //TVector_Multi(&Memory_Pool, 1, );
 }

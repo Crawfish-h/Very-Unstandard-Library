@@ -51,5 +51,3 @@ typedef TGeneric (*Generic_Function)(int arg_Count, ...);
         #define true	1
         #define false	0
     #endif
-
-void* Valloc(size_t size);

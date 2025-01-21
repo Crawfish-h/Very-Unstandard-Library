@@ -23,6 +23,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Containers/TTuple.c
     ${PROJECT_SOURCE_DIR}/Containers/TVector.h
     ${PROJECT_SOURCE_DIR}/Containers/TVector.c
+    ${PROJECT_SOURCE_DIR}/VMemory.h
+    ${PROJECT_SOURCE_DIR}/VMemory.c
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE -fms-extensions)
