@@ -7,6 +7,7 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Main.c
     ${PROJECT_SOURCE_DIR}/Reflection.h
     ${PROJECT_SOURCE_DIR}/Reflection.c
+    ${PROJECT_SOURCE_DIR}/TPair.h
     ${PROJECT_SOURCE_DIR}/Utility.h
     ${PROJECT_SOURCE_DIR}/Utility.c
     ${PROJECT_SOURCE_DIR}/TGeneric.h
@@ -23,6 +24,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Containers/TTuple.c
     ${PROJECT_SOURCE_DIR}/Containers/TVector.h
     ${PROJECT_SOURCE_DIR}/Containers/TVector.c
+    ${PROJECT_SOURCE_DIR}/Containers/TMap.h
+    ${PROJECT_SOURCE_DIR}/Containers/TMap.c
     ${PROJECT_SOURCE_DIR}/VMemory.h
     ${PROJECT_SOURCE_DIR}/VMemory.c
 )

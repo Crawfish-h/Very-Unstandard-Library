@@ -99,6 +99,7 @@ void TVector_Free(TVector* vector)
     }
 
     free(vector->Elements_);
+    free(vector->Types_);
 }
 
 TGeneric TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Allocated)
