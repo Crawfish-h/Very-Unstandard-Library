@@ -45,10 +45,15 @@ void TVector_Multi(TVector* vector, const size_t value_Count, ...)
                 vector->Elements_ = temp_Array;
             }else
             {
-                perror("ERROR: vector->Elements_ could nto be reallocated.");
+                perror("ERROR: vector->Elements_ could not be reallocated.");
                 free(vector->Elements_);
                 free(temp_Array);
                 exit(EXIT_FAILURE);
+            }
+
+            for (size_t j = vector->Size_; j < vector->Capacity_; j++)
+            {
+                vector->Elements_[j] = (TGeneric){ NULL };
             }
         }
 

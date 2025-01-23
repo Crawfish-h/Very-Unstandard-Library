@@ -1,6 +1,7 @@
 #include "TMap.h"
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include "../Reflection.h"
@@ -52,24 +53,16 @@ size_t Index_From_Hash(TMap* map, TString* key)
     return (size_t)(hash & (uint64_t)(map->Capacity - 1));
 }
 
-
-
-bool TMap_Add(TMap* map, TString* key, TGeneric* value)
+// If the provided key is in the map, the return value will be true. [out_Index] has the value of the found key, or the last index gotten in the while loop.
+// If the provided key is not in the map, then [out_Index] will have a value of [0] and the return bool will be false. 
+bool Find_Key(TMap* map, TString* key, size_t* out_Index)
 {
     size_t index = Index_From_Hash(map, key);
-
     while (map->Pairs[index].First.Data != NULL)
     {
         if (TString_Equal(key, &*Cast(TString*, map->Pairs[index].First.Data)) == true)
         {
-            map->Pairs[index].Second = *value;
-            if (Is_Pointer(value->Rtti_) == false)
-            {
-                map->Pairs[index].Second.Data = calloc(1, value->Rtti_.Size_Of);
-                map->Pairs[index].Second.Is_Allocated = true;
-                memcpy(map->Pairs[index].Second.Data, value->Data, value->Rtti_.Size_Of);
-            }
-
+            *out_Index = index;
             return true;
         }
 
@@ -77,6 +70,43 @@ bool TMap_Add(TMap* map, TString* key, TGeneric* value)
         if (index >= map->Capacity) 
         {
             index = 0;
+        }
+    }
+    
+    *out_Index = index;
+    return false;
+}
+
+bool TMap_Add(TMap* map, TString* key, TGeneric* value)
+{
+    Type_Check(&value->Rtti_.Type, map->Types, map->Type_Count);
+
+    size_t index;
+    if (Find_Key(map, key, &index) == true)
+    {
+        return false;
+    }
+
+    map->Size++;
+
+    if (map->Size == map->Capacity)
+    {
+        map->Capacity *= 2;
+        Array_Of(TPair) temp_Array = realloc(map->Pairs, map->Capacity * sizeof(TPair));
+        if (temp_Array != NULL)
+        {
+            map->Pairs = temp_Array;
+        }else
+        {
+            perror("ERROR: vector->Elements_ could not be reallocated.");
+            free(map->Pairs);
+            free(temp_Array);
+            exit(EXIT_FAILURE);
+        }
+
+        for (size_t i = map->Size; i < map->Capacity; i++)
+        {
+            map->Pairs[i] = (TPair){ NULL };
         }
     }
 
@@ -88,16 +118,24 @@ bool TMap_Add(TMap* map, TString* key, TGeneric* value)
         map->Pairs[index].Second.Is_Allocated = true;
         memcpy(map->Pairs[index].Second.Data, value->Data, value->Rtti_.Size_Of);
     }
-    return false;
+
+    return true;
+}
+
+void TMap_Remove(TMap* map, TString* key, TGeneric* value)
+{
+    
 }
 
 TGeneric* TMap_Get(TMap* map, TString* key)
 {
-    size_t index = Index_From_Hash(map, key);
-    while (map->Pairs[index].First.Data != NULL)
-    {
-        
-    }
+    size_t index;
+    Find_Key(map, key, &index);
+    return &map->Pairs[index].Second;
+
+    fprintf(stderr, "ERROR: invalid key argument for TMap_Get(...): %s.\n", key->Str);
+    exit(EXIT_FAILURE);
+    return NULL;
 }
 
 void TMap_Free(TMap* map)
@@ -112,4 +150,6 @@ void TMap_Free(TMap* map)
 
     free(map->Pairs);
     free(map->Types);
+    free(map);
+    *map = (TMap){  };
 }
