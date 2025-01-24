@@ -122,17 +122,32 @@ bool TMap_Add(TMap* map, TString* key, TGeneric* value)
     return true;
 }
 
-void TMap_Remove(TMap* map, TString* key, TGeneric* value)
+void TMap_Remove(TMap* map, TString* key)
 {
-    
+    size_t index;
+    if (Find_Key(map, key, &index) == false)
+    {
+        fprintf(stderr, "ERROR: invalid key argument for TMap_Remove(...): %s.\n", key->Str);
+        exit(EXIT_FAILURE);
+    }
+
+    if (map->Pairs[index].Second.Is_Allocated == true)
+    {
+        free(map->Pairs[index].Second.Data);
+    }
+
+    map->Pairs[index] = (TPair){  };
+    map->Size--;
 }
 
 TGeneric* TMap_Get(TMap* map, TString* key)
 {
     size_t index;
-    Find_Key(map, key, &index);
-    return &map->Pairs[index].Second;
-
+    if (Find_Key(map, key, &index) == true)
+    {
+        return &map->Pairs[index].Second;
+    }
+    
     fprintf(stderr, "ERROR: invalid key argument for TMap_Get(...): %s.\n", key->Str);
     exit(EXIT_FAILURE);
     return NULL;

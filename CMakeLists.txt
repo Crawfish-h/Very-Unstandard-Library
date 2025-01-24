@@ -17,6 +17,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Vutd_Macros.h
     ${PROJECT_SOURCE_DIR}/TString.h
     ${PROJECT_SOURCE_DIR}/TString.c
+    ${PROJECT_SOURCE_DIR}/Containers/TIterator.h
+    ${PROJECT_SOURCE_DIR}/Containers/TIterator.c
     ${PROJECT_SOURCE_DIR}/Containers/TContainer.h
     ${PROJECT_SOURCE_DIR}/Containers/TArray.h
     ${PROJECT_SOURCE_DIR}/Containers/TArray.c

@@ -1,8 +1,10 @@
 #include "VMemory.h"
 #include <stdlib.h>
 #include "Utility.h"
+#include "Containers/TVector.h"
+#include "TGeneric.h"
 
-TVector Memory_Pool;
+TVector* Memory_Pool;
 
 void* Valloc(size_t size)
 {
@@ -15,8 +17,7 @@ void* Valloc(size_t size)
 
 void Memory_Push()
 {
-    TVector* vector = malloc(sizeof(TVector));
-    TVector_Init(vector, 10, 0);
+    TVector* vector = TVector_Init(10, 0);
     TVector_Push(&Memory_Pool, &(TGeneric){ .Data = vector, .Rtti_ = Rtti(TVector*) });
 }
 

@@ -13,7 +13,7 @@ TMap* TMap_Init(size_t capacity, size_t type_Count, ...);
 // Does not add a key-value pair if the provided key already exists inside of the map.
 // Copies an added value if it is not a pointer type.
 bool TMap_Add(TMap* map, TString* key, TGeneric* value);
-void TMap_Remove(TMap* map, TString* key, TGeneric* value);
+void TMap_Remove(TMap* map, TString* key);
 
 TGeneric* TMap_Get(TMap* map, TString* key);
 
