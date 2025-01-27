@@ -1,4 +1,5 @@
 #pragma once 
+#include <stddef.h>
 
 typedef struct TVector TVector;
 extern TVector* Memory_Pool;

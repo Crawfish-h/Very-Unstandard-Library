@@ -1,5 +1,6 @@
 #pragma once
 #include <stddef.h>
+#include <stdio.h>
 #include "TString.h"
 
 
@@ -51,3 +52,11 @@ typedef TGeneric (*Generic_Function)(int arg_Count, ...);
         #define true	1
         #define false	0
     #endif
+
+
+#define Err_Verbose(msg) \
+    fprintf(stderr, "%s in file %s on line %d\n", msg, __FILE__, __LINE__);
+
+
+void Err_Alloc(void* ptr);
+

@@ -1,6 +1,7 @@
 #include "TContainer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "TIterator.h"
 
 size_t TContainer_Grow(TContainer* container, size_t new_Capacity)
@@ -21,20 +22,24 @@ size_t TContainer_Grow(TContainer* container, size_t new_Capacity)
     }
     
     container->Capacity = new_Capacity;
-    Array_Of(TGeneric) temp_Array = realloc(vector->Elements, new_Capacity * sizeof(TGeneric)); // WIP: create a realloc function for TContainer: void* (*Realloc)(TContainer* container).
-    if (temp_Array != NULL)
+    //void* temp_Container_Data = realloc(container->Data_Ptr.Data, new_Capacity * sizeof(TGeneric)); // WIP: create a realloc function for TContainer: void* (*Expand)(TContainer* container).
+    void* temp_Container_Data = container->Alloc(container, new_Capacity);
+    if (temp_Container_Data != NULL)
     {
-        vector->Elements = temp_Array;
-
         if (new_Capacity > container->Size)
         {
-            memset(vector->Elements + container->Size, NULL, new_Capacity - container->Size);
+            //memset(container->Data_Ptr.Data + container->Size, NULL, new_Capacity - container->Size);
+            TIterator it_End = It_At(container, new_Capacity);
+            for (TIterator it = It_At(container, container->Size); It_Cmp(container, &it, &it_End); It_Next(container, &it))
+            {
+                it.Value.Data = NULL;
+            }
         }
     }else
     {
-        perror("ERROR: TContainer->Elements could not be reallocated.");
-        free(vector->Elements);
-        free(temp_Array);
+        perror("ERROR: container element data could not be reallocated.");
+        free(*container->Data_Ptr);
+        free(temp_Container_Data);
         exit(EXIT_FAILURE);
     }
 }

@@ -5,27 +5,72 @@
 #include <string.h>
 #include "../Reflection.h"
 #include "TContainer.h"
+#include "TIterator.h"
 
 typedef struct TVector
 {
-    TContainer* Super;
+    TContainer Super;
     Array_Of(TGeneric) Elements; 
 } TVector;
+
+TIterator TVector_It_Begin(TContainer* container)
+{
+    TVector* vector = (TVector*)container;
+    return (TIterator){ .Value.Data = &vector->Elements[0], .Current_Index = 0, .Container_Type = Rtti(TVector) };
+}
+
+TIterator TVector_It_At(TContainer* container, size_t index)
+{
+    TVector* vector = (TVector*)container;
+    return (TIterator){ .Value.Data = &vector->Elements[index], .Current_Index = index, .Container_Type = Rtti(TVector) };
+}
+
+TIterator TVector_It_End(TContainer* container)
+{
+    TVector* vector = (TVector*)container;
+    return (TIterator){ .Value.Data = &vector->Elements[container->Size - 1], .Current_Index = container->Size - 1, .Container_Type = Rtti(TVector) };
+}
+
+void TVector_It_Next(TContainer* container, TIterator* it)
+{
+    TVector* vector = (TVector*)container;
+    it->Current_Index++;
+    it->Value.Data = &vector->Elements[it->Current_Index];
+}
+
+void* TVector_Alloc(TContainer* container, size_t new_Capacity)
+{
+    TVector* vector = (TVector*)container;
+    vector->Elements = realloc(vector->Elements, new_Capacity * sizeof(TGeneric));
+    return vector->Elements;
+}
+
+bool TVector_It_Cmp(TContainer* container, TIterator* it_0, TIterator* it_1)
+{
+    return it_0->Current_Index == it_1->Current_Index;
+}
 
 TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
 {
     va_list va_Args;
     va_start(va_Args, type_Count);
     TVector* vector = malloc(sizeof(TVector));
-    vector->Super = malloc(sizeof(TContainer));
-    vector->Super->Data_Ptr = (TGeneric){ .Data = &vector->Elements, .Rtti_ = Rtti(Array_Of(TGeneric)*) };
-    TContainer* super = vector->Super;
+    Err_Alloc(vector);
+    vector->Super.Data_Ptr = (void**)&vector->Elements;
+    TContainer* super = &vector->Super;
     super->Size = 0;
     super->Capacity = capcity;
     vector->Elements = calloc(super->Capacity, sizeof(TGeneric));
     super->Type_Count = type_Count;
     super->Type_Capacity = type_Count * 2;
     super->Types = malloc(type_Count * sizeof(TRtti));
+    Err_Alloc(super->Types);
+    super->C_It_Begin = TVector_It_Begin;
+    super->C_It_At = TVector_It_At;
+    super->C_It_End = TVector_It_End;
+    super->C_It_Next = TVector_It_Next;
+    super->C_It_Cmp = TVector_It_Cmp;
+    super->Alloc = TVector_Alloc;
 
     for (size_t i = 0; i < type_Count; i++)
     {
@@ -40,7 +85,7 @@ void TVector_Multi(TVector* vector, size_t value_Count, ...)
 {
     va_list va_Args;
     va_start(va_Args, value_Count);
-    TContainer* super = vector->Super;
+    TContainer* super = &vector->Super;
     
     for (size_t i = 0; i < value_Count; i++)
     {
@@ -49,7 +94,7 @@ void TVector_Multi(TVector* vector, size_t value_Count, ...)
         Type_Check(&pushed_Value->Rtti_.Type, super->Types, super->Type_Count);
         if (super->Size == super->Capacity)
         {
-            Grow_Vector(vector, super->Capacity * 2);
+            TContainer_Grow((TContainer*)vector, super->Capacity * 2);
         }
 
         vector->Elements[super->Size - 1] = *pushed_Value;
@@ -71,7 +116,7 @@ void TVector_Push(TVector* vector, TGeneric* value)
 
 void TVector_Free(TVector* vector)
 {
-    TContainer* super = vector->Super;
+    TContainer* super = &vector->Super;
     for (size_t i = 0; i < super->Size; i++)
     {
         if (vector->Elements[i].Is_Allocated == true)
@@ -82,13 +127,12 @@ void TVector_Free(TVector* vector)
 
     free(vector->Elements);
     free(super->Types);
-    free(vector->Super);
     free(vector);
 }
 
 TGeneric TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Allocated)
 {
-    TContainer* super = vector->Super;
+    TContainer* super = &vector->Super;
     if (index > super->Size - 1)
     {
         fprintf(stderr, "ERROR: vector index out of range. Index argument: %lld. Vector size: %zu.\n", index, super->Size);
@@ -130,7 +174,7 @@ void TVector_Remove_At(TVector* vector, ssize_t index)
 
 void TVector_Pop(TVector* vector)
 {
-    TContainer* super = vector->Super;
+    TContainer* super = &vector->Super;
     if (vector->Elements[super->Size - 1].Is_Allocated == true)
     {
         free(vector->Elements[super->Size - 1].Data);
@@ -142,7 +186,7 @@ void TVector_Pop(TVector* vector)
 
 TGeneric TVector_Pop1(TVector* vector)
 {
-    TContainer* super = vector->Super;
+    TContainer* super = &vector->Super;
     TGeneric return_Gen = vector->Elements[super->Size - 1];
     vector->Elements[super->Size - 1] = (TGeneric){ NULL };
     super->Size--;

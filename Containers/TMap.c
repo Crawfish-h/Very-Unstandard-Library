@@ -166,5 +166,5 @@ void TMap_Free(TMap* map)
     free(map->Pairs);
     free(map->Types);
     free(map);
-    *map = (TMap){  };
+    map = NULL;
 }

@@ -6,6 +6,7 @@
 
 TVector* Memory_Pool;
 
+/*
 void* Valloc(size_t size)
 {
     TVector* latest_Pool = Cast(TVector*, Memory_Pool.Elements_[Memory_Pool.Size_ - 1].Data);
@@ -39,3 +40,4 @@ void Memory_Free()
 
     TVector_Free(Memory_Pool.Elements_);
 }
+*/

@@ -20,6 +20,7 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Containers/TIterator.h
     ${PROJECT_SOURCE_DIR}/Containers/TIterator.c
     ${PROJECT_SOURCE_DIR}/Containers/TContainer.h
+    ${PROJECT_SOURCE_DIR}/Containers/TContainer.c
     ${PROJECT_SOURCE_DIR}/Containers/TArray.h
     ${PROJECT_SOURCE_DIR}/Containers/TArray.c
     ${PROJECT_SOURCE_DIR}/Containers/TTuple.h
