@@ -35,7 +35,7 @@ TString TString_Str_Str(TString* string, TString* sub_String)
     for (; (p = strchr(p, *sub_String->Str)) != 0; p++)
     {
         if (strncmp(p, sub_String->Str, sub_String->Size) == 0)
-            return (TString){ .Size = sub_String->Size, .Str = p, .Super = string->Super };
+            return (TString){ .Size = sub_String->Size, .Str = (char*)p, .Super = string->Super };
     }
 
     return (TString){ 0 };

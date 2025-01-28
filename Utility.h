@@ -49,7 +49,7 @@ typedef TGeneric (*Generic_Function)(int arg_Count, ...);
 #if defined false || defined true || defined bool
     #else
         #define bool	_Bool
-        #define true	1
+        #define true	(!0)
         #define false	0
     #endif
 

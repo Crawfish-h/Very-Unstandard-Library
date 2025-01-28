@@ -2,6 +2,8 @@
 #include <stddef.h>
 #include "../Utility.h"
 #include "../TGeneric.h"
+#include "../Reflection.h"
+#include "TC_Allocator.h"
 
 typedef struct TIterator TIterator;
 typedef struct TContainer TContainer;
@@ -9,6 +11,7 @@ typedef struct TContainer TContainer;
 // The base struct for container types.
 typedef struct TContainer
 {
+    TC_Allocator Allocator;
     void** Data_Ptr; // Data_Ptr.Data should point to a container of some kind (an array, the start of a linked list, etc).
     size_t Size;
     size_t Capacity;
@@ -20,7 +23,9 @@ typedef struct TContainer
     TIterator (*C_It_End)(TContainer* container);
     void (*C_It_Next)(TContainer* container, TIterator* it);
     bool (*C_It_Cmp)(TContainer* container, TIterator* it_0, TIterator* it_1);
-    void* (*Alloc)(TContainer* container, size_t new_Capacity);
+    void* (*Container_Realloc)(TContainer* container, size_t new_Capacity);
+    TGeneric* (*Index_Get)(TContainer* container, TGeneric* index);
+    TRtti Container_Type;
 } TContainer;
 
 // Grows or shrinks the vector depending on the value of [new_Capacity]. 

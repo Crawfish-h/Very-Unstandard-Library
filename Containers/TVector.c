@@ -5,7 +5,7 @@
 #include <string.h>
 #include "../Reflection.h"
 #include "TContainer.h"
-#include "TIterator.h"
+#include "It_Array.h"
 
 typedef struct TVector
 {
@@ -13,41 +13,19 @@ typedef struct TVector
     Array_Of(TGeneric) Elements; 
 } TVector;
 
-TIterator TVector_It_Begin(TContainer* container)
+void* TVector_Container_Realloc(TContainer* container, size_t new_Capacity)
 {
     TVector* vector = (TVector*)container;
-    return (TIterator){ .Value.Data = &vector->Elements[0], .Current_Index = 0, .Container_Type = Rtti(TVector) };
-}
-
-TIterator TVector_It_At(TContainer* container, size_t index)
-{
-    TVector* vector = (TVector*)container;
-    return (TIterator){ .Value.Data = &vector->Elements[index], .Current_Index = index, .Container_Type = Rtti(TVector) };
-}
-
-TIterator TVector_It_End(TContainer* container)
-{
-    TVector* vector = (TVector*)container;
-    return (TIterator){ .Value.Data = &vector->Elements[container->Size - 1], .Current_Index = container->Size - 1, .Container_Type = Rtti(TVector) };
-}
-
-void TVector_It_Next(TContainer* container, TIterator* it)
-{
-    TVector* vector = (TVector*)container;
-    it->Current_Index++;
-    it->Value.Data = &vector->Elements[it->Current_Index];
-}
-
-void* TVector_Alloc(TContainer* container, size_t new_Capacity)
-{
-    TVector* vector = (TVector*)container;
-    vector->Elements = realloc(vector->Elements, new_Capacity * sizeof(TGeneric));
+    vector->Elements = vector->Super.Allocator.Realloc(vector->Elements, new_Capacity * sizeof(TGeneric));
     return vector->Elements;
 }
 
-bool TVector_It_Cmp(TContainer* container, TIterator* it_0, TIterator* it_1)
+TGeneric* TVector_Index_Get(TContainer* container, TGeneric* index);
+
+inline TGeneric* TVector_Index_Get(TContainer* container, TGeneric* index)
 {
-    return it_0->Current_Index == it_1->Current_Index;
+    TVector* vector = (TVector*)container;
+    return &vector->Elements[*(size_t*)index->Data];
 }
 
 TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
@@ -58,19 +36,22 @@ TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
     Err_Alloc(vector);
     vector->Super.Data_Ptr = (void**)&vector->Elements;
     TContainer* super = &vector->Super;
+    super->Allocator = TC_Allocator_Basic();
     super->Size = 0;
     super->Capacity = capcity;
-    vector->Elements = calloc(super->Capacity, sizeof(TGeneric));
+    vector->Elements = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
     super->Type_Count = type_Count;
     super->Type_Capacity = type_Count * 2;
-    super->Types = malloc(type_Count * sizeof(TRtti));
+    super->Types = super->Allocator.Calloc(super->Type_Capacity, type_Count * sizeof(TRtti));
     Err_Alloc(super->Types);
-    super->C_It_Begin = TVector_It_Begin;
-    super->C_It_At = TVector_It_At;
-    super->C_It_End = TVector_It_End;
-    super->C_It_Next = TVector_It_Next;
-    super->C_It_Cmp = TVector_It_Cmp;
-    super->Alloc = TVector_Alloc;
+    super->C_It_Begin = It_Array_Begin;
+    super->C_It_At = It_Array_At;
+    super->C_It_End = It_Array_End;
+    super->C_It_Next = It_Array_Next;
+    super->C_It_Cmp = It_Array_Cmp;
+    super->Container_Realloc = TVector_Container_Realloc;
+    super->Index_Get = TVector_Index_Get;
+    super->Container_Type = Rtti(TVector);
 
     for (size_t i = 0; i < type_Count; i++)
     {
@@ -100,7 +81,7 @@ void TVector_Multi(TVector* vector, size_t value_Count, ...)
         vector->Elements[super->Size - 1] = *pushed_Value;
         if (Is_Pointer(pushed_Value->Rtti_) == false)
         {
-            vector->Elements[super->Size - 1].Data = calloc(1, pushed_Value->Rtti_.Size_Of);
+            vector->Elements[super->Size - 1].Data = super->Allocator.Calloc(1, pushed_Value->Rtti_.Size_Of);
             vector->Elements[super->Size - 1].Is_Allocated = true;
             memcpy(vector->Elements[super->Size - 1].Data, pushed_Value->Data, pushed_Value->Rtti_.Size_Of);
         }
