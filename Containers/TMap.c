@@ -15,6 +15,44 @@ typedef struct TMap
     Array_Of(TPair) Pairs; 
 } TMap;
 
+void* TMap_Container_Realloc(TContainer* container, size_t new_Capacity)
+{
+    TMap* map = (TMap*)container;
+    map->Pairs = map->Super.Allocator.Realloc(map->Pairs, new_Capacity * sizeof(TPair));
+    return map->Pairs;
+}
+
+TGeneric TMap_Index_Get(TContainer* container, TGeneric* index);
+
+inline TGeneric TMap_Index_Get(TContainer* container, TGeneric* index)
+{
+    TMap* map = (TMap*)container;
+    size_t index_Sz = *(size_t*)index->Data;
+
+    TPair* pair = NULL;
+    size_t pairs_Found = 0;
+    for (size_t i = 0; i < container->Capacity; i++)
+    {
+        if (map->Pairs[i].First.Data != NULL)
+        {
+            pairs_Found++;
+            if (pairs_Found >= index_Sz)
+            {
+                pair = &map->Pairs[i];
+                break;
+            }
+        }
+    }
+    
+    return (TGeneric){ .Data = pair, .Rtti_ = Rtti(TPair) };
+}
+
+TGeneric TMap_Allocator_Free(TContainer* container)
+{
+    TMap_Free((TMap*)container);
+    return (TGeneric){ NULL };
+}
+
 TMap* TMap_Init(size_t capacity, size_t type_Count, ...)
 {
     va_list va_Args;
@@ -22,6 +60,8 @@ TMap* TMap_Init(size_t capacity, size_t type_Count, ...)
     TMap* map = malloc(sizeof(TMap));
     Err_Alloc(map);
     TContainer* super = &map->Super;
+    super->Allocator = TC_Allocator_Basic();
+    super->Allocator.Free = TMap_Allocator_Free;
     super->Capacity = capacity;
     map->Pairs = calloc(super->Capacity, sizeof(TPair));
     super->Data_Ptr = (void**)&map->Pairs;
@@ -31,6 +71,14 @@ TMap* TMap_Init(size_t capacity, size_t type_Count, ...)
     super->Type_Capacity = type_Count * 2;
     super->Types = malloc(type_Count * sizeof(TRtti));
     Err_Alloc(super->Types);
+    super->C_It_Begin = It_Array_Begin;
+    super->C_It_At = It_Array_At;
+    super->C_It_End = It_Array_End;
+    super->C_It_Next = It_Array_Next;
+    super->C_It_Cmp = It_Array_Cmp;
+    super->Container_Realloc = TContainer_Array_Alloc_Again;
+    super->Index_Get = TMap_Index_Get;
+    super->Container_Type = Rtti(TMap);
 
     for (size_t i = 0; i < type_Count; i++)
     {
@@ -58,8 +106,6 @@ size_t Index_From_Hash(TMap* map, TString* key)
     return (size_t)(hash & (uint64_t)(super->Capacity - 1));
 }
 
-// If the provided key is in the map, the return value will be true. [out_Index] has the value of the found key, or the last index gotten in the while loop.
-// If the provided key is not in the map, then [out_Index] will have a value of [0] and the return bool will be false. 
 bool Find_Key(TMap* map, TString* key, size_t* out_Index)
 {
     TContainer* super = &map->Super;
@@ -67,12 +113,13 @@ bool Find_Key(TMap* map, TString* key, size_t* out_Index)
     size_t elements_Searched = 0;
     while (map->Pairs[index].First.Data != NULL)
     {
-        if (TString_Equal(key, &*Cast(TString*, map->Pairs[index].First.Data)) == true)
+        //printf("key: %s.\n", Cast(TString*, map->Pairs[index].First.Data)->Str);
+        if (TString_Equal(key, Cast(TString*, map->Pairs[index].First.Data)) == true)
         {
             *out_Index = index;
             return true;
         }
-        
+
         index++;
         elements_Searched++;
         if (index >= super->Capacity) 
@@ -103,27 +150,27 @@ bool TMap_Add(TMap* map, TString* key, TGeneric* value)
 
     super->Size++;
 
-
-    /*if (map->Size == map->Capacity)
+    if (super->Size == super->Capacity)
     {
-        map->Capacity *= 2;
-        Array_Of(TPair) temp_Array = realloc(map->Pairs, map->Capacity * sizeof(TPair));
+        size_t old_Capcity = super->Capacity;
+        super->Capacity *= 2;
+        Array_Of(TPair) temp_Array = realloc(map->Pairs, super->Capacity * sizeof(TPair));
         if (temp_Array != NULL)
         {
             map->Pairs = temp_Array;
         }else
         {
-            perror("ERROR: vector->Elements_ could not be reallocated.");
+            perror("ERROR: TMap->Pairs could not be reallocated.");
             free(map->Pairs);
             free(temp_Array);
             exit(EXIT_FAILURE);
         }
 
-        for (size_t i = map->Size; i < map->Capacity; i++)
+        for (size_t i = old_Capcity; i < super->Capacity; i++)
         {
             map->Pairs[i] = (TPair){ NULL };
         }
-    }*/
+    }
 
     map->Pairs[index].First = (TGeneric){ .Data = key, .Rtti_ = Rtti(TString) };
     map->Pairs[index].Second = *value;

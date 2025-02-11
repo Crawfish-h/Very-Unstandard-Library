@@ -31,6 +31,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Containers/TTuple.c
     ${PROJECT_SOURCE_DIR}/Containers/TVector.h
     ${PROJECT_SOURCE_DIR}/Containers/TVector.c
+    ${PROJECT_SOURCE_DIR}/Containers/TLinked_List.h
+    ${PROJECT_SOURCE_DIR}/Containers/TLinked_List.c
     ${PROJECT_SOURCE_DIR}/Containers/TMap.h
     ${PROJECT_SOURCE_DIR}/Containers/TMap.c
     ${PROJECT_SOURCE_DIR}/VMemory.h

@@ -15,6 +15,7 @@ void Type_Check(TString* type_String, Array_Of(TRtti) types, size_t types_Count)
     {
         for (size_t i = 0; i < types_Count; i++)
         {
+            printf("types: %s.\n", types[i].Type.Str);
             // WIP: change this to a TString based function.
             if (strcmp(type_String->Str, types[i].Type.Str) == 0)
             {

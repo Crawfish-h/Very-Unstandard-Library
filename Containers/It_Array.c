@@ -10,7 +10,7 @@ inline TIterator Make_Iterator(TContainer* container, size_t index)
 {
     return (TIterator)
     { 
-        .Value = *container->Index_Get(container, &(TGeneric){ .Data = &index, .Rtti_ = Rtti(size_t) }),
+        .Value = container->Index_Get(container, &(TGeneric){ .Data = &index, .Rtti_ = Rtti(size_t) }),
         .Current_Index = index, 
         .Container_Type = container->Container_Type 
     };
@@ -34,7 +34,7 @@ inline TIterator It_Array_End(TContainer* container)
 inline void It_Array_Next(TContainer* container, TIterator* it)
 {
     it->Current_Index++;
-    it->Value = *container->Index_Get(container, &(TGeneric){ .Data = &it->Current_Index, .Rtti_ = Rtti(size_t) });
+    it->Value = container->Index_Get(container, &(TGeneric){ .Data = &it->Current_Index, .Rtti_ = Rtti(size_t) });
 }
 
 inline bool It_Array_Cmp(TContainer* container, TIterator* it_0, TIterator* it_1)

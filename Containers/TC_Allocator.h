@@ -8,7 +8,8 @@ typedef struct TC_Allocator
 {
     void* (*Alloc)(size_t size);
     void* (*Realloc)(void* memory, size_t new_Size);
-    void* (*Calloc)(size_t num_Elements,size_t Size_Of_Elements);
+    void* (*Calloc)(size_t num_Elements, size_t size_Of_Elements);
+    void* (*Memcpy)(void* destination, const void * __restrict__ source, size_t size_Of);
     TGeneric (*Free)(TContainer* container);
 } TC_Allocator;
 

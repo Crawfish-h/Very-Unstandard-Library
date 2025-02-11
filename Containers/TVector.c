@@ -13,19 +13,25 @@ typedef struct TVector
     Array_Of(TGeneric) Elements; 
 } TVector;
 
-void* TVector_Container_Realloc(TContainer* container, size_t new_Capacity)
+void* TVector_Container_Realloc(TContainer* container, size_t new_Capacity, TGeneric* arg)
 {
     TVector* vector = (TVector*)container;
     vector->Elements = vector->Super.Allocator.Realloc(vector->Elements, new_Capacity * sizeof(TGeneric));
     return vector->Elements;
 }
 
-TGeneric* TVector_Index_Get(TContainer* container, TGeneric* index);
+TGeneric TVector_Index_Get(TContainer* container, TGeneric* index);
 
-inline TGeneric* TVector_Index_Get(TContainer* container, TGeneric* index)
+inline TGeneric TVector_Index_Get(TContainer* container, TGeneric* index)
 {
     TVector* vector = (TVector*)container;
-    return &vector->Elements[*(size_t*)index->Data];
+    return (TGeneric){ .Data = &vector->Elements[*(size_t*)index->Data], .Rtti_ = Rtti(TGeneric) };
+}
+
+TGeneric TVector_Allocator_Free(TContainer* container)
+{
+    TVector_Free((TVector*)container);
+    return (TGeneric){ NULL };
 }
 
 TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
@@ -37,6 +43,7 @@ TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
     vector->Super.Data_Ptr = (void**)&vector->Elements;
     TContainer* super = &vector->Super;
     super->Allocator = TC_Allocator_Basic();
+    super->Allocator.Free = TVector_Allocator_Free;
     super->Size = 0;
     super->Capacity = capcity;
     vector->Elements = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
@@ -75,7 +82,23 @@ void TVector_Multi(TVector* vector, size_t value_Count, ...)
         Type_Check(&pushed_Value->Rtti_.Type, super->Types, super->Type_Count);
         if (super->Size == super->Capacity)
         {
-            TContainer_Grow((TContainer*)vector, super->Capacity * 2);
+            super->Capacity *= 2;
+            Array_Of(TGeneric) temp_Array = realloc(vector->Elements, super->Capacity * sizeof(TGeneric));
+            if (temp_Array != NULL)
+            {
+                vector->Elements = temp_Array;
+            }else
+            {
+                perror("ERROR: TVector->Elements_ could not be reallocated.");
+                free(vector->Elements);
+                free(temp_Array);
+                exit(EXIT_FAILURE);
+            }
+
+            for (size_t i = super->Size; i < super->Capacity; i++)
+            {
+                vector->Elements[i] = (TGeneric){ NULL };
+            }
         }
 
         vector->Elements[super->Size - 1] = *pushed_Value;
@@ -83,7 +106,7 @@ void TVector_Multi(TVector* vector, size_t value_Count, ...)
         {
             vector->Elements[super->Size - 1].Data = super->Allocator.Calloc(1, pushed_Value->Rtti_.Size_Of);
             vector->Elements[super->Size - 1].Is_Allocated = true;
-            memcpy(vector->Elements[super->Size - 1].Data, pushed_Value->Data, pushed_Value->Rtti_.Size_Of);
+            super->Allocator.Memcpy(vector->Elements[super->Size - 1].Data, pushed_Value->Data, pushed_Value->Rtti_.Size_Of);
         }
     }
 
@@ -100,9 +123,15 @@ void TVector_Free(TVector* vector)
     TContainer* super = &vector->Super;
     for (size_t i = 0; i < super->Size; i++)
     {
-        if (vector->Elements[i].Is_Allocated == true)
+        if (vector->Elements[i].Dtor == NULL)
         {
-            free(vector->Elements[i].Data);
+            if (vector->Elements[i].Is_Allocated == true)
+            {
+                free(vector->Elements[i].Data);
+            }
+        }else
+        {
+            vector->Elements[i].Dtor(&vector->Elements[i]);
         }
     }
 
