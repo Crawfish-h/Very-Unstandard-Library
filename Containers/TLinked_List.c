@@ -25,7 +25,7 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
     super->Types = super->Allocator.Calloc(super->Type_Capacity, type_Count * sizeof(TRtti));
     Err_Alloc(super->Types);
     super->Container_Type = Rtti(TLinked_List);
-
+    
     va_list va_Args;
     value_Count += type_Count;
     va_start(va_Args, value_Count);
@@ -38,7 +38,12 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
     list->First = NULL;
     list->Last = NULL;
 
-    for (size_t i = type_Count; i < value_Count; i++)
+    if (value_Count - type_Count > 0)
+    {
+        TLinked_List_Add(list, 0, 1, va_arg(va_Args, TGeneric*));
+    }
+
+    for (size_t i = type_Count + 1; i < value_Count; i++)
     {
         TLinked_List_Add(list, super->Size - 1, 1, va_arg(va_Args, TGeneric*));
     }
@@ -76,10 +81,10 @@ bool TLinked_List_Add(TLinked_List* list, ssize_t index, size_t value_Count, ...
 
     if (index < 0)
     {
-        index = super->Size - index;
+        index = super->Size + index;
     }
-
-    if (index > super->Size - 1 || index < 0)
+    
+    if ((index > super->Size - 1 || index < 0))
     {
         fprintf(stderr, "ERROR: TLinked_List index out of range. Index argument: %lld. TLinked_List size: %zu.\n", index, super->Size);
         exit(EXIT_FAILURE);
@@ -107,6 +112,8 @@ bool TLinked_List_Add(TLinked_List* list, ssize_t index, size_t value_Count, ...
         indexed_Node->Next = new_Node;
         new_Node->Next = old_Next;
         new_Node->Value = *va_arg(va_Args, TGeneric*);
+        
+        printf("added node val type: %s\n", new_Node->Value.Rtti_.Type.Str);
 
         if (index == super->Size - 1)
         {
