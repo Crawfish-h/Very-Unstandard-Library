@@ -24,7 +24,7 @@ typedef struct TContainer
     void (*C_It_Next)(TContainer* container, TIterator* it);
     bool (*C_It_Cmp)(TContainer* container, TIterator* it_0, TIterator* it_1);
     void* (*Container_Realloc)(TContainer* container, size_t new_Capacity, TGeneric* arg);
-    TGeneric (*Index_Get)(TContainer* container, TGeneric* index);
+    TGeneric* (*Get)(TContainer* container, ssize_t index);
     TRtti Container_Type;
 } TContainer;
 
@@ -39,3 +39,11 @@ size_t TContainer_Type_Count(TContainer* container);
 size_t TContainer_Type_Capacity(TContainer* container);
 size_t TContainer_Size(TContainer* container);
 void* TContainer_Array_Alloc_Again(TContainer* container, size_t new_Capacity, TGeneric* arg);
+
+#define Define_Container_Get(container_Type, get_Function) \
+static TGeneric* Typed_Container_Get(TContainer* container, ssize_t index) \
+{ \
+    container_Type* casted_Container = (container_Type*)container; \
+    return get_Function(casted_Container, index); \
+}
+

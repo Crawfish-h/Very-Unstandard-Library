@@ -11,6 +11,8 @@ typedef struct TLinked_List
     TNode* Last;
 } TLinked_List;
 
+Define_Container_Get(TLinked_List, TLinked_List_Get1)
+
 TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
 {
     TLinked_List* list = malloc(sizeof(TLinked_List));
@@ -25,6 +27,7 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
     super->Types = super->Allocator.Calloc(super->Type_Capacity, type_Count * sizeof(TRtti));
     Err_Alloc(super->Types);
     super->Container_Type = Rtti(TLinked_List);
+    super->Get = Typed_Container_Get;
     
     va_list va_Args;
     value_Count += type_Count;
@@ -57,7 +60,7 @@ TNode* TLinked_List_Get_Node(TLinked_List* list, ssize_t index)
     TNode* current_node = list->First;
     TContainer* super = &list->Super;
 
-    for (size_t j = 0; j < index; j++)
+    for (size_t i = 0; i < index; i++)
     {
         if (current_node == NULL)
         {
@@ -103,16 +106,17 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
     {
         TNode* new_Node = super->Allocator.Calloc(1, sizeof(TNode));
         new_Node->Value = *va_arg(va_Args, TGeneric*);
-        super->Size++;
         ssize_t node_Index = index + node_Count;
 
-        TNode* indexed_Node = TLinked_List_Get_Node(list, node_Index);
+        TNode* indexed_Node = NULL;
         if (node_Index == super->Size)
         {
+            indexed_Node = TLinked_List_Get_Node(list, node_Index - 1);
             indexed_Node->Next = new_Node;
             list->Last = new_Node;
         }else
         {
+            indexed_Node = TLinked_List_Get_Node(list, node_Index);
             new_Node->Next = indexed_Node;
             if (node_Index == 0)
             {
@@ -123,6 +127,8 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
                 prev_Node->Next = new_Node;
             }
         }
+
+        super->Size++;
     }
 
     va_end(va_Args);

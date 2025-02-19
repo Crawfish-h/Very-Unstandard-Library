@@ -6,6 +6,7 @@
 
 size_t TContainer_Grow(TContainer* container, size_t new_Capacity, TGeneric* arg)
 { 
+    /*
     if (new_Capacity < container->Size)
     {
         TIterator it_End = It_End(container);
@@ -46,6 +47,7 @@ size_t TContainer_Grow(TContainer* container, size_t new_Capacity, TGeneric* arg
         free(temp_Container_Data);
         exit(EXIT_FAILURE);
     }
+    */
 }
 
 size_t TContainer_Size(TContainer* container)

@@ -34,6 +34,8 @@ TGeneric TVector_Allocator_Free(TContainer* container)
     return (TGeneric){ NULL };
 }
 
+Define_Container_Get(TVector, TVector_Get)
+
 TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
 {
     va_list va_Args;
@@ -57,7 +59,7 @@ TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
     super->C_It_Next = It_Array_Next;
     super->C_It_Cmp = It_Array_Cmp;
     super->Container_Realloc = TVector_Container_Realloc;
-    super->Index_Get = TVector_Index_Get;
+    super->Get = Typed_Container_Get;
     super->Container_Type = Rtti(TVector);
 
     for (size_t i = 0; i < type_Count; i++)

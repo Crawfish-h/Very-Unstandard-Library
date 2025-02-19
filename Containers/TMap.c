@@ -77,7 +77,7 @@ TMap* TMap_Init(size_t capacity, size_t type_Count, ...)
     super->C_It_Next = It_Array_Next;
     super->C_It_Cmp = It_Array_Cmp;
     super->Container_Realloc = TContainer_Array_Alloc_Again;
-    super->Index_Get = TMap_Index_Get;
+    //super->Index_Get = TMap_Index_Get;
     super->Container_Type = Rtti(TMap);
 
     for (size_t i = 0; i < type_Count; i++)
