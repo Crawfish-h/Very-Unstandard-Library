@@ -13,7 +13,7 @@ typedef struct TDoubly_Node
 
 typedef struct TDoubly_Linked_List TDoubly_Linked_List;
 
-// all types need to come before the values.
+// All types need to come before the values.
 TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Count, ...);
 
 // Adds a node that holds the supplied values >AFTER< the [index] argument and returns true if the new value was allocated.

@@ -19,7 +19,6 @@ TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Co
     Err_Alloc(list);
     TContainer* super = &list->Super;
     super->Allocator = TC_Allocator_Basic();
-    //super->Allocator.Free = TVector_Allocator_Free;
     super->Size = 0;
     super->Capacity = value_Count * 2;
     super->Type_Count = type_Count;
@@ -113,6 +112,7 @@ bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, ssize_t index, size_t 
     {
         TDoubly_Node* first_Node = super->Allocator.Calloc(1, sizeof(TDoubly_Node));
         first_Node->Value = *va_arg(va_Args, TGeneric*);
+        Type_Check(&first_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
         node_Count++;
         super->Size++;
         list->First = first_Node;
@@ -123,6 +123,7 @@ bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, ssize_t index, size_t 
     {
         TDoubly_Node* new_Node = super->Allocator.Calloc(1, sizeof(TDoubly_Node));
         new_Node->Value = *va_arg(va_Args, TGeneric*);
+        Type_Check(&new_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
         ssize_t node_Index = index + node_Count;
 
         TDoubly_Node* indexed_Node = NULL;

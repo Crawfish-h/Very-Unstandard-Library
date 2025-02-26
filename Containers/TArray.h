@@ -6,12 +6,22 @@
 #include "../TObject.h"
 #include "../Reflection.h"
 
+ typedef struct TRtti TRtti;
 
 typedef struct TArray
 {
-    TGeneric;
+    TRtti Type;
+    void* Array;
     size_t Size;
+    bool Is_Allocated;
 } TArray;
 
-TArray TArray_Init(TRtti rtti, size_t size, void* array);
-TGeneric TArray_Ctor(TArray args);
+#define TArray_Init(type, size, array_Values) \
+({ \
+    type vul_TArray_Init_Array[size] = array_Values; \
+    TArray* vul_TArray_Init_TArray_Result = &(TArray){ .Type = Rtti(type), .Array = vul_TArray_Init_Array, .Size = size }; \
+    vul_TArray_Init_TArray_Result; \
+})
+    
+#define TArray_Init1(size, array_Values) \
+    TArray_Init(NULL, size, array_Values)

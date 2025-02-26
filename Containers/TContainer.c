@@ -4,6 +4,17 @@
 #include <string.h>
 #include "TIterator.h"
 
+void TContainer_Init(TContainer* container, size_t type_Count, size_t value_Count)
+{
+    container->Allocator = TC_Allocator_Basic();
+    container->Size = 0;
+    container->Capacity = value_Count * 2;
+    container->Type_Count = type_Count;
+    container->Type_Capacity = type_Count * 2;
+    container->Types = container->Allocator.Calloc(container->Type_Capacity, type_Count * sizeof(TRtti));
+    Err_Alloc(container->Types);
+}
+
 size_t TContainer_Grow(TContainer* container, size_t new_Capacity, TGeneric* arg)
 { 
     /*

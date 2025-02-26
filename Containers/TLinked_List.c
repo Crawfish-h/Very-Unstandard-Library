@@ -95,6 +95,7 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
     if (super->Size == 0)
     {
         TNode* first_Node = super->Allocator.Calloc(1, sizeof(TNode));
+        Type_Check(&first_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
         first_Node->Value = *va_arg(va_Args, TGeneric*);
         node_Count++;
         super->Size++;
@@ -105,6 +106,7 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
     for (; node_Count < value_Count; node_Count++)
     {
         TNode* new_Node = super->Allocator.Calloc(1, sizeof(TNode));
+        Type_Check(&new_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
         new_Node->Value = *va_arg(va_Args, TGeneric*);
         ssize_t node_Index = index + node_Count;
 

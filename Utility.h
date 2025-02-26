@@ -60,3 +60,17 @@ typedef TGeneric (*Generic_Function)(int arg_Count, ...);
 
 void Err_Alloc(void* ptr);
 
+typedef struct TMaybe
+{
+    void* Data;
+    bool Is_Nothing;
+} TMaybe;
+
+#define Nothing (TMaybe){ .Data = NULL, .Is_Nothing = false }
+
+#define Just(value) \
+({ \
+    typeof(value)* vul_Just_Value_ = &value; \
+    TMaybe* vul_Just_Maybe_ = &(TMaybe){ .Data = vul_Just_Value_, .Is_Nothing = true }; \
+    vul_Just_Maybe_; \
+})

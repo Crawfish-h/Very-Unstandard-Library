@@ -53,6 +53,5 @@ TGeneric TString_Equal_Overload(int arg_Count, ...)
         .Data = &result,
         .Rtti_ = Rtti(bool),
         .Is_Allocated = false,
-        .Super = NULL
     };
 }

@@ -35,6 +35,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Containers/TDoubly_Linked_List.c
     ${PROJECT_SOURCE_DIR}/Containers/TLinked_List.h
     ${PROJECT_SOURCE_DIR}/Containers/TLinked_List.c
+    ${PROJECT_SOURCE_DIR}/Containers/TTree.h
+    ${PROJECT_SOURCE_DIR}/Containers/TTree.c
     ${PROJECT_SOURCE_DIR}/Containers/TMap.h
     ${PROJECT_SOURCE_DIR}/Containers/TMap.c
     ${PROJECT_SOURCE_DIR}/VMemory.h

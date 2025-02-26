@@ -11,6 +11,7 @@ typedef struct TVector
 {
     TContainer Super;
     Array_Of(TGeneric) Elements; 
+    bool (*Sort)(TGeneric* value);
 } TVector;
 
 void* TVector_Container_Realloc(TContainer* container, size_t new_Capacity, TGeneric* arg)
@@ -40,7 +41,7 @@ TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
 {
     va_list va_Args;
     va_start(va_Args, type_Count);
-    TVector* vector = malloc(sizeof(TVector));
+    TVector* vector = calloc(1, sizeof(TVector));
     Err_Alloc(vector);
     vector->Super.Data_Ptr = (void**)&vector->Elements;
     TContainer* super = &vector->Super;

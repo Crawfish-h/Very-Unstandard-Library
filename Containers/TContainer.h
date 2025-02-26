@@ -1,12 +1,12 @@
 #pragma once
 #include <stddef.h>
 #include "../Utility.h"
-#include "../TGeneric.h"
 #include "../Reflection.h"
 #include "TC_Allocator.h"
 
 typedef struct TIterator TIterator;
 typedef struct TContainer TContainer;
+typedef struct TGeneric TGeneric;
 
 // The base struct for container types.
 typedef struct TContainer
@@ -27,6 +27,8 @@ typedef struct TContainer
     TGeneric* (*Get)(TContainer* container, ssize_t index);
     TRtti Container_Type;
 } TContainer;
+
+void TContainer_Init(TContainer* container, size_t type_Count, size_t value_Count);
 
 // Grows or shrinks the vector depending on the value of [new_Capacity]. 
 // Will free elements if the new capacity is smaller than the current size.
