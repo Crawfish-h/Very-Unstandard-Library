@@ -23,7 +23,7 @@ inline TGeneric TG2(TRtti* rtti, void* data, bool is_Allocated, TGeneric (*dtor)
 
 #define TG(type, data) \
 ({ \
-    type* VUL_TG_data_Value_ = data; \
+    type VUL_TG_data_Value_ = data; \
     TGeneric* VUL_TG_generic = &(TGeneric){ .Data = &VUL_TG_data_Value_, .Rtti_ = Rtti(type) }; \
     VUL_TG_generic; \
 })

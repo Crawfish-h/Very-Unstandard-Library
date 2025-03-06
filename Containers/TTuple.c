@@ -51,8 +51,7 @@ void TTuple_Set(TTuple* tuple, size_t index, TGeneric* new_Value)
         super->Size++;
     }
     
-
-    Type_Check(new_Value->Rtti_.Type.Str, super->Types, super->Type_Count);
+    Type_Check(&new_Value->Rtti_.Type, super->Types, super->Type_Count);
     *(TGeneric*)tuple->Array[index].Data = *new_Value;
 }
 

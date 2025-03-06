@@ -13,6 +13,8 @@ typedef struct TManip_Fns TManip_Fns;
 
 typedef TGeneric (*Generic_Function)(int arg_Count, ...);
 
+typedef void* TArg[];
+
 /*
     Generic_Function Ctor;
     Generic_Function Dtor;
@@ -74,3 +76,9 @@ typedef struct TMaybe
     TMaybe* vul_Just_Maybe_ = &(TMaybe){ .Data = vul_Just_Value_, .Is_Nothing = true }; \
     vul_Just_Maybe_; \
 })
+
+#define Num_Args(args) (sizeof((TGeneric[]){args})/sizeof(TGeneric))
+
+// Converts an r value to a l value's address.
+#define L_Val(r_Value) &(typeof(r_Value)[1]){ r_Value }
+
