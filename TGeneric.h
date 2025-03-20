@@ -22,13 +22,17 @@ inline TGeneric TG2(TRtti* rtti, void* data, bool is_Allocated, TGeneric (*dtor)
 */
 
 #define TG(type, data) \
-({ \
-    type VUL_TG_data_Value_ = data; \
-    TGeneric* VUL_TG_generic = &(TGeneric){ .Data = &VUL_TG_data_Value_, .Rtti_ = Rtti(type) }; \
-    VUL_TG_generic; \
-})
+    &(TGeneric){ .Data = &(type[]){ data }, .Rtti_ = Rtti(type) }
+/*&(struct { TGeneric Generic_Field; }) \
+{ \
+    ({ \
+        type VUL_TG_data_Value_ = data; \
+        (TGeneric){ .Data = &VUL_TG_data_Value_, .Rtti_ = Rtti(type) }; \
+    }) \
+}.Generic_Field*/
 
-    /*&(TGeneric){ .Data = &data, .Rtti_ = Rtti(type) }*/
+
+    /* &(TGeneric){ .Data = &(typeof(data)[]){ data }, .Rtti_ = Rtti(data) } */
 
 TGeneric TGeneric_Init(void* data, TRtti rtti, TObject* super);
 void TGeneric_Ctor();

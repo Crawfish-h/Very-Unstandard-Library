@@ -25,7 +25,7 @@ TTree* TTree_Init(size_t type_Count, size_t value_Count, ...)
     TTree* tree = calloc(1, sizeof(TTree));
     Err_Alloc(tree);
     TContainer* super = &tree->Super;
-    TContainer_Init(super, type_Count, value_Count);
+    TContainer_Init(super, value_Count * 2, type_Count, NULL, NULL, TC_Allocator_Basic());
     super->Container_Type = Rtti(TTree);
     //super->Get = Typed_Container_Get;
 

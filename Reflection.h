@@ -29,6 +29,7 @@ TRtti TRtti_Init_(void* check, size_t size_Of_Type, TString* type_String);
 #define Rtti(type) TRtti_Init_((type*)NULL, sizeof(type), &NT_TString(Stringify(type)))
 
 void Type_Check(TString* type_String, Array_Of(TRtti) types, size_t types_Count);
+bool Compare_Types(TRtti* type_Info_0, TRtti* type_Info_1);
 
 // Checks if a type or [TRtti] object is a pointer. Does not work with typedefed pointers (e.g., typedef int* int_Pointer).
 bool Is_Pointer(TRtti rtti);

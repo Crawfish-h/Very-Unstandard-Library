@@ -15,7 +15,6 @@ void Type_Check(TString* type_String, Array_Of(TRtti) types, size_t types_Count)
     {
         for (size_t i = 0; i < types_Count; i++)
         {
-            printf("types: %s.\n", types[i].Type.Str);
             // WIP: change this to a TString based function.
             if (strcmp(type_String->Str, types[i].Type.Str) == 0)
             {
@@ -31,6 +30,11 @@ void Type_Check(TString* type_String, Array_Of(TRtti) types, size_t types_Count)
     for (size_t i = 1; i < types_Count; i++) fprintf(stderr, ", %s", types[i].Type.Str);
     fprintf(stderr, ".\n");
     exit(EXIT_FAILURE);
+}
+
+bool Compare_Types(TRtti* type_Info_0, TRtti* type_Info_1)
+{
+    return TString_Equal(&type_Info_0->Type, &type_Info_1->Type) == true && type_Info_0->Size_Of == type_Info_1->Size_Of;
 }
 
 bool Is_Pointer(TRtti rtti)

@@ -17,6 +17,8 @@ void TVector_Multi(TVector* vector, size_t value_Count, ...);
 
 void TVector_Push(TVector* vector, TGeneric* value);
 
+void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value);
+
 void TVector_Free(TVector* vector);
 
 // Removes the element at [index] and frees it if it was allocated.

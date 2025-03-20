@@ -25,10 +25,17 @@ typedef struct TContainer
     bool (*C_It_Cmp)(TContainer* container, TIterator* it_0, TIterator* it_1);
     void* (*Container_Realloc)(TContainer* container, size_t new_Capacity, TGeneric* arg);
     TGeneric* (*Get)(TContainer* container, ssize_t index);
+    void (*Add)(TContainer* container, ssize_t index, TGeneric* value);
     TRtti Container_Type;
 } TContainer;
 
-void TContainer_Init(TContainer* container, size_t type_Count, size_t value_Count);
+void TContainer_Init
+(
+    TContainer* container, size_t capcity, size_t type_Count, 
+    TGeneric* (*container_Get)(TContainer* container, ssize_t index), 
+    void (*container_Add)(TContainer* container, ssize_t index, TGeneric* value),
+    TC_Allocator allocator
+);
 
 // Grows or shrinks the vector depending on the value of [new_Capacity]. 
 // Will free elements if the new capacity is smaller than the current size.
@@ -42,10 +49,25 @@ size_t TContainer_Type_Capacity(TContainer* container);
 size_t TContainer_Size(TContainer* container);
 void* TContainer_Array_Alloc_Again(TContainer* container, size_t new_Capacity, TGeneric* arg);
 
+void TContainer_Add_If_Pointer(TContainer* container, TGeneric* value, TGeneric* new_Value);
+
+// Returns true if a [TRtti] value was added to [container->Types].
+bool TContainer_Add_Type(TContainer* container, TRtti* new_Type);
+
+// Returns true if a [TRtti] value was removed from [container->Types].
+bool TContainer_Remove_Type(TContainer* container, TRtti* type);
+
 #define Define_Container_Get(container_Type, get_Function) \
 static TGeneric* Typed_Container_Get(TContainer* container, ssize_t index) \
 { \
     container_Type* casted_Container = (container_Type*)container; \
     return get_Function(casted_Container, index); \
+}
+
+#define Define_Container_Add(container_Type, add_Function) \
+static void Typed_Container_Add(TContainer* container, ssize_t index, TGeneric* value) \
+{ \
+    container_Type* casted_Container = (container_Type*)container; \
+    add_Function(casted_Container, index, value); \
 }
 

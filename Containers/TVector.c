@@ -36,6 +36,7 @@ TGeneric TVector_Allocator_Free(TContainer* container)
 }
 
 Define_Container_Get(TVector, TVector_Get)
+Define_Container_Add(TVector, TVector_Add_At)
 
 TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
 {
@@ -43,24 +44,9 @@ TVector* TVector_Init(size_t capcity, size_t type_Count, ...)
     va_start(va_Args, type_Count);
     TVector* vector = calloc(1, sizeof(TVector));
     Err_Alloc(vector);
-    vector->Super.Data_Ptr = (void**)&vector->Elements;
     TContainer* super = &vector->Super;
-    super->Allocator = TC_Allocator_Basic();
-    super->Allocator.Free = TVector_Allocator_Free;
-    super->Size = 0;
-    super->Capacity = capcity;
-    vector->Elements = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
-    super->Type_Count = type_Count;
-    super->Type_Capacity = type_Count * 2;
-    super->Types = super->Allocator.Calloc(super->Type_Capacity, type_Count * sizeof(TRtti));
-    Err_Alloc(super->Types);
-    super->C_It_Begin = It_Array_Begin;
-    super->C_It_At = It_Array_At;
-    super->C_It_End = It_Array_End;
-    super->C_It_Next = It_Array_Next;
-    super->C_It_Cmp = It_Array_Cmp;
-    super->Container_Realloc = TVector_Container_Realloc;
-    super->Get = Typed_Container_Get;
+    TContainer_Init(super, capcity, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
+    vector->Elements = super->Allocator.Calloc(super->Capacity + 1, sizeof(TGeneric));
     super->Container_Type = Rtti(TVector);
 
     for (size_t i = 0; i < type_Count; i++)
@@ -121,6 +107,37 @@ void TVector_Push(TVector* vector, TGeneric* value)
     TVector_Multi(vector, 1, value);
 }
 
+void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value)
+{
+    TContainer* super = &vector->Super;
+
+    if (index < super->Size)
+    {
+
+        size_t initial_Size = super->Size;
+        if (super->Size > 0)
+        {
+            TVector_Multi(vector, 1, &vector->Elements[index]);
+        }
+        
+        super->Size = initial_Size + 1;
+        vector->Elements[index] = *value;
+        if (Is_Pointer(value->Rtti_) == false)
+        {
+            vector->Elements[index].Data = super->Allocator.Calloc(1, value->Rtti_.Size_Of);
+            vector->Elements[index].Is_Allocated = true;
+            super->Allocator.Memcpy(vector->Elements[index].Data, value->Data, value->Rtti_.Size_Of);
+        }
+    } else if (index == super->Size)
+    {
+        TVector_Push(vector, value);
+    }else
+    {
+        fprintf(stderr, "ERROR: in functon [TVector_Add_At], argument [index] is greater than [TVectir.Super.Size].\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
 void TVector_Free(TVector* vector)
 {
     TContainer* super = &vector->Super;
@@ -132,7 +149,7 @@ void TVector_Free(TVector* vector)
             {
                 free(vector->Elements[i].Data);
             }
-        }else
+        } else
         {
             vector->Elements[i].Dtor(&vector->Elements[i]);
         }

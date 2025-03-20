@@ -6,229 +6,91 @@
 #include <string.h>
 #include <stdbool.h>
 #include "../Reflection.h"
+#include "../TPair.h"
 #include "TContainer.h"
-#include "It_Array.h"
+#include "TVector.h"
 
 typedef struct TMap
 {
-    TContainer Super;
-    Array_Of(TPair) Pairs; 
+    TContainer* Container;
+    TString* String;
 } TMap;
 
-void* TMap_Container_Realloc(TContainer* container, size_t new_Capacity)
+TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ...)
 {
-    TMap* map = (TMap*)container;
-    map->Pairs = map->Super.Allocator.Realloc(map->Pairs, new_Capacity * sizeof(TPair));
-    return map->Pairs;
-}
-
-TGeneric TMap_Index_Get(TContainer* container, TGeneric* index);
-
-inline TGeneric TMap_Index_Get(TContainer* container, TGeneric* index)
-{
-    TMap* map = (TMap*)container;
-    size_t index_Sz = *(size_t*)index->Data;
-
-    TPair* pair = NULL;
-    size_t pairs_Found = 0;
-    for (size_t i = 0; i < container->Capacity; i++)
-    {
-        if (map->Pairs[i].First.Data != NULL)
-        {
-            pairs_Found++;
-            if (pairs_Found >= index_Sz)
-            {
-                pair = &map->Pairs[i];
-                break;
-            }
-        }
-    }
-    
-    return (TGeneric){ .Data = pair, .Rtti_ = Rtti(TPair) };
-}
-
-TGeneric TMap_Allocator_Free(TContainer* container)
-{
-    TMap_Free((TMap*)container);
-    return (TGeneric){ NULL };
-}
-
-TMap* TMap_Init(size_t capacity, size_t type_Count, ...)
-{
-    va_list va_Args;
-    va_start(va_Args, type_Count);
-    TMap* map = malloc(sizeof(TMap));
-    Err_Alloc(map);
-    TContainer* super = &map->Super;
-    super->Allocator = TC_Allocator_Basic();
-    super->Allocator.Free = TMap_Allocator_Free;
-    super->Capacity = capacity;
-    map->Pairs = calloc(super->Capacity, sizeof(TPair));
-    super->Data_Ptr = (void**)&map->Pairs;
-    Err_Alloc(map->Pairs);
-    super->Size = 0;
-    super->Type_Count = type_Count;
-    super->Type_Capacity = type_Count * 2;
-    super->Types = malloc(type_Count * sizeof(TRtti));
-    Err_Alloc(super->Types);
-    super->C_It_Begin = It_Array_Begin;
-    super->C_It_At = It_Array_At;
-    super->C_It_End = It_Array_End;
-    super->C_It_Next = It_Array_Next;
-    super->C_It_Cmp = It_Array_Cmp;
-    super->Container_Realloc = TContainer_Array_Alloc_Again;
-    //super->Index_Get = TMap_Index_Get;
-    super->Container_Type = Rtti(TMap);
+    TMap* map = calloc(1, sizeof(TMap));
+    va_list arg_List;
+    value_Count += type_Count;
+    va_start(arg_List, value_Count);
+    value_Count -= type_Count;
+    map->Container = container;
+    map->String = &NT_TString("Map String");
 
     for (size_t i = 0; i < type_Count; i++)
     {
-        super->Types[i] = va_arg(va_Args, TRtti);
+        TRtti rtti = va_arg(arg_List, TRtti);
+        TContainer_Add_Type(container, &rtti);
     }
 
-    va_end(va_Args);
+    TRtti rtti = Rtti(TPair);
+    TContainer_Add_Type(container, &rtti);
+
+    for (size_t i = 0; i < value_Count; i++)
+    {
+        TPair* pair = va_arg(arg_List, TPair*);
+        //TMap_Add(map, (TString*)pair->First.Data, &pair->Second);
+        TMap_Multi(map, 1, pair);
+    }
+
+    va_end(arg_List);
     return map;
-}
-
-#define FNV_OFFSET 14695981039346656037UL
-#define FNV_PRIME 1099511628211UL
-
-// FNV-1 Hash function from https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function#FNV-1_hash
-size_t Index_From_Hash(TMap* map, TString* key)
-{
-    TContainer* super = &map->Super;
-    uint64_t hash = FNV_OFFSET;
-    for (const char* p = key->Str; *p; p++)
-    {
-        hash ^= (uint64_t)(unsigned char)(*p);
-        hash *= FNV_PRIME;
-    }
-    
-    return (size_t)(hash & (uint64_t)(super->Capacity - 1));
-}
-
-bool Find_Key(TMap* map, TString* key, size_t* out_Index)
-{
-    TContainer* super = &map->Super;
-    size_t index = Index_From_Hash(map, key);
-    size_t elements_Searched = 0;
-    while (map->Pairs[index].First.Data != NULL)
-    {
-        //printf("key: %s.\n", Cast(TString*, map->Pairs[index].First.Data)->Str);
-        if (TString_Equal(key, Cast(TString*, map->Pairs[index].First.Data)) == true)
-        {
-            *out_Index = index;
-            return true;
-        }
-
-        index++;
-        elements_Searched++;
-        if (index >= super->Capacity) 
-        {
-            index = 0;
-        }
-
-        if (elements_Searched == super->Capacity)
-        {
-            break;
-        }
-    }
-    
-    *out_Index = index;
-    return false;
 }
 
 bool TMap_Add(TMap* map, TString* key, TGeneric* value)
 {
-    TContainer* super = &map->Super;
-    Type_Check(&value->Rtti_.Type, super->Types, super->Type_Count);
-
-    size_t index;
-    if (Find_Key(map, key, &index) == true)
-    {
-        return false;
-    }
-
-    super->Size++;
-
-    if (super->Size == super->Capacity)
-    {
-        size_t old_Capcity = super->Capacity;
-        super->Capacity *= 2;
-        Array_Of(TPair) temp_Array = realloc(map->Pairs, super->Capacity * sizeof(TPair));
-        if (temp_Array != NULL)
-        {
-            map->Pairs = temp_Array;
-        }else
-        {
-            perror("ERROR: TMap->Pairs could not be reallocated.");
-            free(map->Pairs);
-            free(temp_Array);
-            exit(EXIT_FAILURE);
-        }
-
-        for (size_t i = old_Capcity; i < super->Capacity; i++)
-        {
-            map->Pairs[i] = (TPair){ NULL };
-        }
-    }
-
-    map->Pairs[index].First = (TGeneric){ .Data = key, .Rtti_ = Rtti(TString) };
-    map->Pairs[index].Second = *value;
-    if (Is_Pointer(value->Rtti_) == false)
-    {
-        map->Pairs[index].Second.Data = calloc(1, value->Rtti_.Size_Of);
-        map->Pairs[index].Second.Is_Allocated = true;
-        memcpy(map->Pairs[index].Second.Data, value->Data, value->Rtti_.Size_Of);
-    }
-
-    return true;
+    TPair pair = { .First = *TG(TString*, key), .Second = *value };
+    TMap_Multi(map, 1, &pair);
 }
 
-void TMap_Remove(TMap* map, TString* key)
+bool TMap_Multi(TMap* map, size_t value_Count, ...)
 {
-    TContainer* super = &map->Super;
-    size_t index;
-    if (Find_Key(map, key, &index) == false)
+    va_list arg_List;
+    va_start(arg_List, value_Count);
+    TContainer* cont = map->Container;
+
+    for (size_t i = 0; i < value_Count; i++)
     {
-        fprintf(stderr, "ERROR: invalid key argument for TMap_Remove(...): %s.\n", key->Str);
-        exit(EXIT_FAILURE);
+        TPair* pair = va_arg(arg_List, TPair*);
+        Type_Check(&pair->Second.Rtti_.Type, cont->Types, cont->Type_Count);
+        TString* key = pair->First.Data;
+        //printf("key: %s.\n", key->Str);
+        //printf("value type: %s.\n", pair->Second.Rtti_.Type.Str);
+        size_t index = 0;
+        if (cont->Size > 0) index = cont->Size - 1;
+        cont->Add(cont, index, TG(TPair, *pair));
     }
 
-    if (map->Pairs[index].Second.Is_Allocated == true)
-    {
-        free(map->Pairs[index].Second.Data);
-    }
-
-    map->Pairs[index] = (TPair){  };
-    super->Size--;
+    va_end(arg_List);
 }
 
-TGeneric* TMap_Get(TMap* map, TString* key)
+TPair TMap_Get_Data(TMap* map, TString* key)
 {
-    size_t index;
-    if (Find_Key(map, key, &index) == true)
+    for (size_t i = 0; i < map->Container->Size; i++)
     {
-        return &map->Pairs[index].Second;
+        TPair* pair = map->Container->Get(map->Container, i)->Data;
+        TString* indexed_Key = pair->First.Data;
+        if (TString_Equal(indexed_Key, key) == true)
+        {
+            return *pair;
+        }
     }
-    
-    fprintf(stderr, "ERROR: invalid key argument for TMap_Get(...): %s.\n", key->Str);
+
+    fprintf(stderr, "ERROR: could not find key '%s' in [TMap].\n", key->Str);
     exit(EXIT_FAILURE);
-    return NULL;
+    return (TPair){  };
 }
 
-void TMap_Free(TMap* map)
+void* TMap_Get(TMap* map, TString* key)
 {
-    TContainer* super = &map->Super;
-    for (size_t i = 0; i < super->Size; i++)
-    {
-        if (map->Pairs[i].Second.Is_Allocated == true)
-        {
-            free(map->Pairs[i].Second.Data);
-        }
-    }
-
-    free(map->Pairs);
-    free(super->Types);
-    free(map);
-    map = NULL;
+    return TMap_Get_Data(map, key).Second.Data;
 }

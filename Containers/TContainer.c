@@ -3,16 +3,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include "TIterator.h"
+#include "../Utility.h"
 
-void TContainer_Init(TContainer* container, size_t type_Count, size_t value_Count)
+void TContainer_Init
+(
+    TContainer* container, size_t capcity, size_t type_Count, 
+    TGeneric* (*container_Get)(TContainer* container, ssize_t index), 
+    void (*container_Add)(TContainer* container, ssize_t index, TGeneric* value),
+    TC_Allocator allocator
+)
 {
-    container->Allocator = TC_Allocator_Basic();
+    container->Capacity = capcity;
+    container->Allocator = allocator;
     container->Size = 0;
-    container->Capacity = value_Count * 2;
-    container->Type_Count = type_Count;
+    container->Type_Count;
     container->Type_Capacity = type_Count * 2;
-    container->Types = container->Allocator.Calloc(container->Type_Capacity, type_Count * sizeof(TRtti));
+    if (container->Type_Capacity == 0) container->Type_Capacity = 4;
+    container->Types = container->Allocator.Calloc(container->Type_Capacity, container->Type_Capacity * sizeof(TRtti));
     Err_Alloc(container->Types);
+    container->Get = container_Get;
+    container->Add = container_Add;
 }
 
 size_t TContainer_Grow(TContainer* container, size_t new_Capacity, TGeneric* arg)
@@ -87,4 +97,67 @@ void* TContainer_Array_Alloc_Again(TContainer* container, size_t new_Capacity, T
     memcpy(container_Elements, *container->Data_Ptr, container->Capacity - 1);
     free(*container->Data_Ptr);
     *container->Data_Ptr = container_Elements;
+}
+
+void TContainer_Add_If_Pointer(TContainer* container, TGeneric* value, TGeneric* new_Value)
+{
+    *value = *new_Value;
+    if (Is_Pointer(new_Value->Rtti_) == false)
+    {
+        value->Data = container->Allocator.Calloc(1, new_Value->Rtti_.Size_Of);
+        value->Is_Allocated = true;
+        container->Allocator.Memcpy(value->Data, new_Value->Data, new_Value->Rtti_.Size_Of);
+    }
+}
+
+bool TContainer_Add_Type(TContainer* container, TRtti* new_Type)
+{
+    for (size_t i; i < container->Type_Count; i++)
+    {
+        if (Compare_Types(&container->Types[i], new_Type) == true)
+        {
+            return false;
+        }
+    }
+
+    container->Type_Count++;
+    if (container->Type_Count >= container->Type_Capacity)
+    {
+        container->Type_Capacity *= 2;
+        Array_Of(TRtti) temp_Array = container->Allocator.Realloc(container->Types, container->Type_Capacity * sizeof(TRtti));
+        if (temp_Array != NULL)
+        {
+            container->Types = temp_Array;
+        }else
+        {
+            perror("ERROR: container->Types could not be reallocated.");
+            free(container->Types);
+            free(temp_Array);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    container->Types[container->Type_Count - 1] = *new_Type;
+    return true; 
+}
+
+bool TContainer_Remove_Type(TContainer* container, TRtti* type)
+{
+    TRtti temp_Array[container->Type_Capacity];
+    container->Allocator.Memcpy(temp_Array, container->Types, container->Type_Capacity);
+    size_t j = 0;
+    bool type_Found = false;
+    for (size_t i = 0; i < container->Type_Count; i++)
+    {
+        if (Compare_Types(&container->Types[i], type) == true) 
+        {
+            type_Found = true;
+            continue;
+        }
+        
+        container->Types[j] = temp_Array[i];
+        j++;
+    }
+
+    return type_Found;
 }
