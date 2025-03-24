@@ -46,10 +46,9 @@ TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ..
     return map;
 }
 
-bool TMap_Add(TMap* map, TString* key, TGeneric* value)
+bool TMap_Add(TMap* map, TPair* key_Value_Pair)
 {
-    TPair pair = { .First = *TG(TString*, key), .Second = *value };
-    TMap_Multi(map, 1, &pair);
+    TMap_Multi(map, 1, key_Value_Pair);
 }
 
 bool TMap_Multi(TMap* map, size_t value_Count, ...)

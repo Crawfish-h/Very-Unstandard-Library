@@ -16,7 +16,7 @@ Define_Container_Add(TLinked_List, TLinked_List_Add)
 
 TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
 {
-    TLinked_List* list = malloc(sizeof(TLinked_List));
+    TLinked_List* list = calloc(1, sizeof(TLinked_List));
     Err_Alloc(list);
     TContainer* super = &list->Super;
     TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
@@ -88,8 +88,8 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
     if (super->Size == 0)
     {
         TNode* first_Node = super->Allocator.Calloc(1, sizeof(TNode));
-        Type_Check(&first_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
         TContainer_Add_If_Pointer(super, &first_Node->Value, va_arg(va_Args, TGeneric*));
+        Type_Check(&first_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
         node_Count++;
         super->Size++;
         list->First = first_Node;
@@ -99,8 +99,8 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
     for (; node_Count < value_Count; node_Count++)
     {
         TNode* new_Node = super->Allocator.Calloc(1, sizeof(TNode));
-        Type_Check(&new_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
         TContainer_Add_If_Pointer(super, &new_Node->Value, va_arg(va_Args, TGeneric*));
+        Type_Check(&new_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
         ssize_t node_Index = index + node_Count;
 
         TNode* indexed_Node = NULL;

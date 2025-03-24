@@ -3,20 +3,21 @@
 #include <stdbool.h>
 #include "Utility.h"
 
-typedef struct TArray TArray;
+typedef struct TVector TVector;
 
 typedef struct TRtti
 {
     TString Type;
     size_t Size_Of;
+    TVector* Fields;
+    TVector* Functions;
 } TRtti;
 
 typedef struct TMethod
 {
     TString Name;
-    TArray* Args; // Array of TRtti.
+    TVector* Args;
     TRtti Return_Type;
-    TString Attributes;
 } TMethod;
 
 // Returns runtime type information. 

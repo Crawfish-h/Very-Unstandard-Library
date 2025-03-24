@@ -16,7 +16,7 @@ Define_Container_Add(TDoubly_Linked_List, TDoubly_Linked_List_Add)
 
 TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Count, ...)
 {
-    TDoubly_Linked_List* list = malloc(sizeof(TDoubly_Linked_List));
+    TDoubly_Linked_List* list = calloc(1, sizeof(TDoubly_Linked_List));
     Err_Alloc(list);
     TContainer* super = &list->Super;
     TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
