@@ -13,12 +13,13 @@ void TContainer_Init
     TC_Allocator allocator
 )
 {
-    container->Capacity = capcity;
     container->Allocator = allocator;
     container->Size = 0;
     container->Type_Count;
     container->Type_Capacity = type_Count * 2;
+    container->Capacity = capcity;
     if (container->Type_Capacity == 0) container->Type_Capacity = 4;
+    if (container->Capacity == 0) container->Capacity = 1;
     container->Types = container->Allocator.Calloc(container->Type_Capacity, container->Type_Capacity * sizeof(TRtti));
     Err_Alloc(container->Types);
     container->Get = container_Get;

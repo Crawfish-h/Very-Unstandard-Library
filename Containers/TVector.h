@@ -8,7 +8,10 @@ typedef struct TVector TVector;
 
 // Initializes a [TVector]. Can only initialize [TVectors] with types, no values.
 // types of all [...] arguments should be a TRtti. 
-TVector* TVector_Init(size_t capcity, size_t type_Count, ...);
+TVector* TVector_Init(size_t type_Count, size_t value_Count, ...);
+
+// Returns [true] if [new_Capacity] > [vector->Super.Capcity].
+bool TVector_Grow(TVector* vector, size_t new_Capacity);
 
 // Pushes a value to a [TVector].
 // Types of all [...] arguments should be a [TGeneric*]. 
@@ -33,4 +36,5 @@ TGeneric TVector_Pop1(TVector* vector);
 // Removes the element at [index] and returns it.
 TGeneric TVector_Remove_At1(TVector* vector, ssize_t index); 
 
-TGeneric* TVector_Get(TVector* vector, size_t index);
+TGeneric* TVector_Get_Data(TVector* vector, size_t index);
+void* TVector_Get(TVector* vector, size_t index);

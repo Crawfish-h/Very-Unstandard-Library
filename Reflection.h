@@ -9,16 +9,7 @@ typedef struct TRtti
 {
     TString Type;
     size_t Size_Of;
-    TVector* Fields;
-    TVector* Functions;
 } TRtti;
-
-typedef struct TMethod
-{
-    TString Name;
-    TVector* Args;
-    TRtti Return_Type;
-} TMethod;
 
 // Returns runtime type information. 
 // [check] exists so that if a nonexistant variable is passed to it, it will generate an error.

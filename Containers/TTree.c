@@ -59,7 +59,7 @@ TTree_Node* TTree_Find_Node_Loop(TTree* tree, ssize_t index, TTree_Node* current
     {
         // I don't know why we cannot get a TTree_Node* from the vector.
         // It works in other functions but not in this one.
-        TTree_Node* node = *(TTree_Node**)TVector_Get(current_Node->Children, i)->Data; 
+        TTree_Node* node = *(TTree_Node**)TVector_Get(current_Node->Children, i); 
         printf("current_Node->Index: %lld\n", current_Node->Index);
         printf("node->Index: %lld\n", node->Index);
         if (node->Index == index || TTree_Find_Node_Loop(tree, index, node) != NULL)
@@ -136,7 +136,7 @@ void TTree_Multi(TTree* tree, size_t value_Count, ...)
         TTree_Node* new_Node = super->Allocator.Calloc(1, sizeof(TTree_Node));
         new_Node->Index = 50012345;
         TVector_Push(first_Node->Children, TG(TTree_Node*, new_Node));
-        TTree_Node* get_Node = *(TTree_Node**)TVector_Get(first_Node->Children, 0)->Data;
+        TTree_Node* get_Node = *(TTree_Node**)TVector_Get(first_Node->Children, 0);
         printf("first_Node child index: %lld\n", get_Node->Index);
         value_Count--;
     }
