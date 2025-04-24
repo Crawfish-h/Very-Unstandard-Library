@@ -39,7 +39,7 @@ bool Compare_Types(TRtti* type_Info_0, TRtti* type_Info_1)
 
 bool Is_Pointer(TRtti rtti)
 {
-    if (TString_Str_Str(&rtti.Type, &NT_TString("*")).Str != NULL)
+    if (TString_Str_Str(&rtti.Type, NT_TString("*")).Str != NULL)
     {
         return true;
     }

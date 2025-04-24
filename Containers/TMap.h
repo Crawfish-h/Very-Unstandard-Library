@@ -23,6 +23,6 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...);
 void TMap_Remove(TMap* map, TString* key);
 
 void* TMap_Get(TMap* map, TString* key);
-TPair TMap_Get_Data(TMap* map, TString* key);
+TPair TMap_Get_Info(TMap* map, TString* key);
 
 void TMap_Free(TMap* map);

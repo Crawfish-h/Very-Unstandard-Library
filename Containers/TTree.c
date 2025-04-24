@@ -15,19 +15,20 @@ typedef struct TTree
 } TTree;
 
 
-TTree_Arg TTree_ArgF(ssize_t parent_Index, ssize_t new_Node_Index, TGeneric* new_Value)
+TTree_Argument TTree_ArgumentF(ssize_t parent_Index, ssize_t new_Node_Index, TGeneric* new_Value)
 {
-    return (TTree_Arg){ .Parent_Index = parent_Index };
+    return (TTree_Argument){ .Parent_Index = parent_Index };
 }
+
+Define_Container_Get(TTree, TTree_Get_Info)
+Define_Container_Add(TTree, TTree_Add_Define)
 
 TTree* TTree_Init(size_t type_Count, size_t value_Count, ...)
 {
     TTree* tree = calloc(1, sizeof(TTree));
     Err_Alloc(tree);
     TContainer* super = &tree->Super;
-    TContainer_Init(super, value_Count * 2, type_Count, NULL, NULL, TC_Allocator_Basic());
-    super->Container_Type = Rtti(TTree);
-    //super->Get = Typed_Container_Get;
+    TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
 
     va_list va_Args;
     value_Count += type_Count;
@@ -40,73 +41,43 @@ TTree* TTree_Init(size_t type_Count, size_t value_Count, ...)
 
     for (size_t i = 0; i < value_Count - type_Count; i++)
     {
-        TTree_Add(tree, va_arg(va_Args, TTree_Arg*));
+        TTree_Add(tree, va_arg(va_Args, TTree_Argument*));
     }
 
     va_end(va_Args);
     return tree;
 }
 
-TTree_Node* TTree_Find_Node_Loop(TTree* tree, ssize_t index, TTree_Node* current_Node)
+void TTree_Get_Node_DFS_Recursive(TTree_Node* current_Node, ssize_t index, TTree_Node** out_Node)
 {
-    if (current_Node->Children == NULL)
-    {
-        printf("return NULL\n");
-        return NULL;
-    }
-    
     for (size_t i = 0; i < TContainer_Size((TContainer*)current_Node->Children); i++)
     {
-        // I don't know why we cannot get a TTree_Node* from the vector.
-        // It works in other functions but not in this one.
-        TTree_Node* node = *(TTree_Node**)TVector_Get(current_Node->Children, i); 
-        printf("current_Node->Index: %lld\n", current_Node->Index);
-        printf("node->Index: %lld\n", node->Index);
-        if (node->Index == index || TTree_Find_Node_Loop(tree, index, node) != NULL)
-        {
-            printf("return node\n");
-            return node;
-        }
-    }
+        if (*out_Node != NULL) return;
 
-    printf("return NULL 2\n");
-    return NULL;
+        TTree_Node* node = (TTree_Node*)TVector_Get(current_Node->Children, i); 
+        if (node->Index == index)
+        {
+            *out_Node = node;
+            return;
+        }
+
+        TTree_Get_Node_DFS_Recursive(node, index, out_Node);
+    }
 }
 
 // Gets a node using Depth First Search.
 TTree_Node* TTree_Get_Node_DFS(TTree* tree, ssize_t index)
 {
-    TContainer* super = &tree->Super;
-    TTree_Node* current_Node = tree->First;
-    size_t current_Depth = 0;
-
-    if (tree->First == NULL || super->Size == 0)
+    if (tree->First->Index == index) return tree->First;
+    TTree_Node* found_Node = NULL;
+    TTree_Get_Node_DFS_Recursive(tree->First, index, &found_Node);
+    if (found_Node == NULL) 
     {
-        fprintf(stderr, "ERROR: tried to run function [TTree_Get_Node_DFS] but [tree->First == NULL] or [super->Size == 0]\n");
+        fprintf(stderr, "ERROR: could not find node with index '%d' in [TTree].\n", index);
         exit(EXIT_FAILURE);
     }
 
-    if (current_Node == NULL)
-    {
-        fprintf(stderr, "ERROR: [current_Node] is [NULL] in function [TTree_Get_Node_DFS]\n");
-        exit(EXIT_FAILURE);
-    }
-
-    if (current_Node->Index == index)
-    {
-        printf("return current_Node\n");
-        return current_Node;
-    }
-
-    TTree_Node* find_Node_Result = TTree_Find_Node_Loop(tree, index, tree->First);
-    if (find_Node_Result == NULL)
-    {
-        fprintf(stderr, "ERROR: could not find a [TTree_Node*] with an index of [%lld] in function [TTree_Get_Node_DFS]\n", index);
-        exit(EXIT_FAILURE);
-    }
-
-    printf("current_Node->Index: %lld\n", current_Node->Index);
-    return find_Node_Result;
+    return found_Node;
 }
 
 // Gets a node using Breadth First Search.
@@ -124,42 +95,41 @@ void TTree_Multi(TTree* tree, size_t value_Count, ...)
     size_t node_Count = 0;
     if (super->Size == 0)
     {
-        node_Count++;
         super->Size++;
         TTree_Node* first_Node = super->Allocator.Calloc(1, sizeof(TTree_Node));
-        TTree_Arg* node_Data = va_arg(va_Args, TTree_Arg*);
-        first_Node->Index = node_Data->New_Node_Index;
-        first_Node->Value = *node_Data->New_Value;
         tree->First = first_Node;
-        first_Node->Children = TVector_Init(4, 1, Rtti(TTree_Node*));
-
-        TTree_Node* new_Node = super->Allocator.Calloc(1, sizeof(TTree_Node));
-        new_Node->Index = 50012345;
-        TVector_Push(first_Node->Children, TG(TTree_Node*, new_Node));
-        TTree_Node* get_Node = *(TTree_Node**)TVector_Get(first_Node->Children, 0);
-        printf("first_Node child index: %lld\n", get_Node->Index);
+        first_Node->Children = TVector_Init(1, 0, Rtti(TTree_Node*));
+        TTree_Argument* tree_Arg = va_arg(va_Args, TTree_Argument*);
+        Type_Check(&tree_Arg->New_Value->Rtti_.Type, super->Types, super->Type_Count);
+        first_Node->Index = tree_Arg->New_Node_Index;
+        TContainer_Add_If_Pointer(super, &first_Node->Value, tree_Arg->New_Value);
         value_Count--;
     }
 
     for (size_t i = 0; i < value_Count; i++)
     {
-        TTree_Node* new_Node = super->Allocator.Calloc(1, sizeof(TTree_Node));
-        TTree_Arg* node_Data = va_arg(va_Args, TTree_Arg*);
-        new_Node->Index = node_Data->New_Node_Index;
-        printf("Added index: %lld\n", new_Node->Index);
-        new_Node->Value = *node_Data->New_Value;
-        TTree_Node* indexed_Node = TTree_Get_Node_DFS(tree, node_Data->Parent_Index);
-        TVector_Push(indexed_Node->Children, TG(TTree_Node*, new_Node));
-        new_Node->Parent = indexed_Node;
-        new_Node->Children = TVector_Init(4, 1, Rtti(TTree_Node*));
+        TTree_Node* node = super->Allocator.Calloc(1, sizeof(TTree_Node));
+        node->Children = TVector_Init(1, 0, Rtti(TTree_Node*));
+        TTree_Argument* tree_Arg = va_arg(va_Args, TTree_Argument*);
+        Type_Check(&tree_Arg->New_Value->Rtti_.Type, super->Types, super->Type_Count);
+        node->Index = tree_Arg->New_Node_Index;
+        TContainer_Add_If_Pointer(super, &node->Value, tree_Arg->New_Value);
+        TTree_Node* parent_Node = TTree_Get_Node_DFS(tree, tree_Arg->Parent_Index);
+        TVector_Push(parent_Node->Children, TGL(TTree_Node*, node));
+        super->Size++;
     }
 
     va_end(va_Args);
 }
 
-void TTree_Add(TTree* tree, TTree_Arg* new_Value)
+void TTree_Add(TTree* tree, TTree_Argument* new_Value)
 {
     TTree_Multi(tree, 1, new_Value);
+}
+
+void TTree_Add_Define(TTree* tree, ssize_t index, TGeneric* new_Value)
+{
+    TTree_Multi(tree, 1, &(TTree_Argument){ .Parent_Index = tree->First->Index, .New_Node_Index = index, .New_Value = new_Value });
 }
 
 void* TTree_Get(TTree* tree, ssize_t index)
@@ -167,7 +137,7 @@ void* TTree_Get(TTree* tree, ssize_t index)
     return TTree_Get_Node_DFS(tree, index)->Value.Data;
 }
 
-TGeneric* TTree_Get1(TTree* tree, ssize_t index)
+TGeneric* TTree_Get_Info(TTree* tree, ssize_t index)
 {
     return &TTree_Get_Node_DFS(tree, index)->Value;
 }

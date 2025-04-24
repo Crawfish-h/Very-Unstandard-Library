@@ -4,10 +4,10 @@
 
 TC_Allocator TC_Allocator_Basic()
 {
-    return (TC_Allocator){ .Alloc = malloc, .Realloc = realloc, .Calloc = calloc, .Memcpy = memcpy };
+    return (TC_Allocator){ .Alloc = malloc, .Realloc = realloc, .Calloc = calloc, .Memcpy = memcpy, .Memmove = memmove };
 }
 
 TC_Allocator TC_Allocator_Arena()
 {
-    return (TC_Allocator){ .Alloc = malloc, .Realloc = realloc, .Calloc = calloc, .Memcpy = memcpy };
+    return (TC_Allocator){ .Alloc = malloc, .Realloc = realloc, .Calloc = calloc, .Memcpy = memcpy, .Memmove = memmove };
 }

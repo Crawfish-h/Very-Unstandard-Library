@@ -20,8 +20,7 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
     Err_Alloc(list);
     TContainer* super = &list->Super;
     TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
-    super->Container_Type = Rtti(TLinked_List);
-    
+
     va_list va_Args;
     value_Count += type_Count;
     va_start(va_Args, value_Count);
@@ -156,4 +155,16 @@ void TLinked_List_Set(TLinked_List* list, ssize_t index, TGeneric* new_Value)
     }
 
     *value = *new_Value;
+}
+
+void TLinked_List_Free(TLinked_List* list)
+{
+    for (size_t i = list->Super.Size - 1; i > -1; i--)
+    {
+        TNode* node = TLinked_List_Get_Node(list, i);
+        if (node->Value.Dtor != NULL) node->Value.Dtor(NULL);
+        free(node);
+    }
+
+    free(list);
 }

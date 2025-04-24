@@ -13,7 +13,6 @@
 typedef struct TMap
 {
     TContainer* Container;
-    TString* String;
 } TMap;
 
 TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ...)
@@ -24,7 +23,6 @@ TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ..
     va_start(arg_List, value_Count);
     value_Count -= type_Count;
     map->Container = container;
-    map->String = &NT_TString("Map String");
 
     for (size_t i = 0; i < type_Count; i++)
     {
@@ -62,17 +60,26 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...)
         TPair* pair = va_arg(arg_List, TPair*);
         Type_Check(&pair->Second.Rtti_.Type, cont->Types, cont->Type_Count);
         TString* key = pair->First.Data;
-        //printf("key: %s.\n", key->Str);
+        char* temp_Key_Str = key->Str;
+        key->Str = cont->Allocator.Calloc(1, key->Super.Size + 1);
+        memcpy(key->Str, temp_Key_Str, key->Super.Size);
+        TGeneric key_Gen = pair->First;
+        TGeneric value_Gen = pair->Second;
+        TContainer_Add_If_Pointer(cont, &key_Gen, &pair->First);
+        TContainer_Add_If_Pointer(cont, &value_Gen, &pair->Second);
+        pair->First = key_Gen;
+        pair->Second = value_Gen;
+        key = pair->First.Data;
         //printf("value type: %s.\n", pair->Second.Rtti_.Type.Str);
         size_t index = 0;
         if (cont->Size > 0) index = cont->Size - 1;
-        cont->Add(cont, index, TG(TPair, *pair));
+        cont->Add(cont, index, TGL(TPair, pair));
     }
 
     va_end(arg_List);
 }
 
-TPair TMap_Get_Data(TMap* map, TString* key)
+TPair TMap_Get_Info(TMap* map, TString* key)
 {
     for (size_t i = 0; i < map->Container->Size; i++)
     {
@@ -91,5 +98,5 @@ TPair TMap_Get_Data(TMap* map, TString* key)
 
 void* TMap_Get(TMap* map, TString* key)
 {
-    return TMap_Get_Data(map, key).Second.Data;
+    return TMap_Get_Info(map, key).Second.Data;
 }

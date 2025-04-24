@@ -1,20 +1,24 @@
 #pragma once
 #include <stddef.h>
 #include <stdbool.h>
+#include "Containers/TContainer.h"
 
 typedef struct TObject TObject;
 typedef struct TGeneric TGeneric;
 
 typedef struct TString
 {
-    TObject* Super;
+    TContainer Super;
     char* Str;
-    size_t Size;
 } TString;
 
 // Creates a TString from a null terminated string.
 #define NT_TString(n_String) \
-    (TString){ .Str = n_String, .Size = (sizeof(n_String) / sizeof(n_String[0])) - 1 }
+    &(TString){ .Str = n_String, .Super.Size = (sizeof(n_String) / sizeof(n_String[0])) - 1 }
+
+TString TString_Dyn(char* string);
+void TString_Insert0(TString* string, char* other_String, ssize_t index);
+void TString_Insert1(TString* string, TString* other_String, ssize_t index);
 
 bool TString_Equal(TString* str_0, TString* str_1);
 bool TString_Equal_N(TString* str_0, TString* str_1, size_t n);

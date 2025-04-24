@@ -1,12 +1,12 @@
 #pragma once
 #include <stddef.h>
 #include "../Utility.h"
-#include "../Reflection.h"
 #include "TC_Allocator.h"
 
 typedef struct TIterator TIterator;
 typedef struct TContainer TContainer;
 typedef struct TGeneric TGeneric;
+typedef struct TRtti TRtti;
 
 // The base struct for container types.
 typedef struct TContainer
@@ -26,7 +26,6 @@ typedef struct TContainer
     void* (*Container_Realloc)(TContainer* container, size_t new_Capacity, TGeneric* arg);
     TGeneric* (*Get)(TContainer* container, ssize_t index);
     void (*Add)(TContainer* container, ssize_t index, TGeneric* value);
-    TRtti Container_Type;
 } TContainer;
 
 void TContainer_Init

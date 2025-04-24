@@ -35,7 +35,7 @@ TGeneric TVector_Allocator_Free(TContainer* container)
     return (TGeneric){ NULL };
 }
 
-Define_Container_Get(TVector, TVector_Get_Data)
+Define_Container_Get(TVector, TVector_Get_Info)
 Define_Container_Add(TVector, TVector_Add_At)
 
 TVector* TVector_Init(size_t type_Count, size_t value_Count, ...)
@@ -45,8 +45,7 @@ TVector* TVector_Init(size_t type_Count, size_t value_Count, ...)
     TContainer* super = &vector->Super;
     TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
     vector->Elements = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
-    super->Container_Type = Rtti(TVector);
-
+    
     va_list va_Args;
     value_Count += type_Count;
     va_start(va_Args, value_Count);
@@ -160,12 +159,12 @@ void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value)
         TVector_Push(vector, value);
     }else
     {
-        fprintf(stderr, "ERROR: in functon [TVector_Add_At], argument [index] is greater than [TVectir.Super.Size].\n");
+        fprintf(stderr, "ERROR: in functon [TVector_Add_At], argument [index] is greater than [TVector.Super.Size].\n");
         exit(EXIT_FAILURE);
     }
 }
 
-void TVector_Free(TVector* vector)
+void TVector_Clear(TVector* vector)
 {
     TContainer* super = &vector->Super;
     for (size_t i = 0; i < super->Size; i++)
@@ -183,11 +182,16 @@ void TVector_Free(TVector* vector)
     }
 
     free(vector->Elements);
-    free(super->Types);
+}
+
+void TVector_Free(TVector* vector)
+{
+    TVector_Clear(vector);
+    free(vector->Super.Types);
     free(vector);
 }
 
-TGeneric TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Allocated)
+void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Allocated)
 {
     TContainer* super = &vector->Super;
     if (index > super->Size - 1)
@@ -197,18 +201,18 @@ TGeneric TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Al
     }
 
     size_t initial_Index = 0;
-    int index_Change = 1;
     if (index < 0)
     {
         initial_Index = super->Size - index;
-        index_Change = -1;
     }
 
-    for (size_t i = initial_Index; i < super->Size;)
+
+    /*TGeneric return_Gen = (TGeneric){  };
+    for (size_t i = initial_Index; i < super->Size; i++)
     {
         if (i == index)
         {
-            TGeneric return_Gen = vector->Elements[i];
+            return_Gen = vector->Elements[i];
 
             if (vector->Elements[i].Is_Allocated == true && free_Allocated == true)
             {
@@ -216,15 +220,51 @@ TGeneric TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Al
             }
 
             super->Size--;
-            vector->Elements[i] = (TGeneric){ NULL };
-            return return_Gen;
+            vector->Elements[i] = (TGeneric){  };
+        }
+    }*/
+
+    
+    if (index < super->Size - 1)
+    {
+        Array_Of(TGeneric) temp_Array = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
+
+        size_t j = 0;
+        for (size_t i = 0; i < super->Size; i++)
+        {
+            if (i != index)
+            {
+                temp_Array[j] = vector->Elements[i];
+                j++;
+            }
         }
 
-        i += index_Change;
+        if (free_Allocated == true)
+        {
+            if (vector->Elements[index].Dtor == NULL)
+            {
+                if (vector->Elements[index].Is_Allocated == true)
+                {
+                    free(vector->Elements[index].Data);
+                }
+            } else
+            {
+                vector->Elements[index].Dtor(&vector->Elements[index]);
+            }
+        }
+
+        super->Size--;
+        free(vector->Elements);
+        vector->Elements = temp_Array;
     }
 }
 
 void TVector_Remove_At(TVector* vector, ssize_t index)
+{
+    TVector_Remove_At_Internal(vector, index, false);
+}
+
+void TVector_Remove_At1(TVector* vector, ssize_t index)
 {
     TVector_Remove_At_Internal(vector, index, true);
 }
@@ -250,12 +290,7 @@ TGeneric TVector_Pop1(TVector* vector)
     return return_Gen;
 }
 
-TGeneric TVector_Remove_At1(TVector* vector, ssize_t index)
-{
-    TVector_Remove_At_Internal(vector, index, false);
-}
-
-TGeneric* TVector_Get_Data(TVector* vector, size_t index)
+TGeneric* TVector_Get_Info(TVector* vector, size_t index)
 {
     return &vector->Elements[index];
 }

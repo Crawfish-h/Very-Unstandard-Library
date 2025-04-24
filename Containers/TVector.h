@@ -22,10 +22,14 @@ void TVector_Push(TVector* vector, TGeneric* value);
 
 void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value);
 
+void TVector_Clear(TVector* vector);
 void TVector_Free(TVector* vector);
 
 // Removes the element at [index] and frees it if it was allocated.
 void TVector_Remove_At(TVector* vector, ssize_t index); 
+
+// Removes the element at [index] and returns it.
+void TVector_Remove_At1(TVector* vector, ssize_t index); 
 
 // Removes the last element in the vector and frees it if it was allocated.
 void TVector_Pop(TVector* vector); 
@@ -33,8 +37,5 @@ void TVector_Pop(TVector* vector);
 // Removes the last element in the vector and returns it.
 TGeneric TVector_Pop1(TVector* vector); 
 
-// Removes the element at [index] and returns it.
-TGeneric TVector_Remove_At1(TVector* vector, ssize_t index); 
-
-TGeneric* TVector_Get_Data(TVector* vector, size_t index);
+TGeneric* TVector_Get_Info(TVector* vector, size_t index);
 void* TVector_Get(TVector* vector, size_t index);

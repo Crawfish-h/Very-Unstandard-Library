@@ -20,7 +20,6 @@ TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Co
     Err_Alloc(list);
     TContainer* super = &list->Super;
     TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
-    super->Container_Type = Rtti(TDoubly_Linked_List);
     
     va_list va_Args;
     value_Count += type_Count;
@@ -159,4 +158,16 @@ void* TDoubly_Linked_List_Get(TDoubly_Linked_List* list, ssize_t index)
 TGeneric* TDoubly_Linked_List_Get1(TDoubly_Linked_List* list, ssize_t index)
 {
     return &TDoubly_Linked_List_Get_Node(list, index)->Value;
+}
+
+void TDoubly_Linked_List_Free(TDoubly_Linked_List* list)
+{
+    for (size_t i = list->Super.Size - 1; i > -1; i--)
+    {
+        TDoubly_Node* node = TDoubly_Linked_List_Get_Node(list, i);
+        if (node->Value.Dtor != NULL) node->Value.Dtor(NULL);
+        free(node);
+    }
+
+    free(list);
 }

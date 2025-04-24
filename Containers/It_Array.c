@@ -12,7 +12,6 @@ inline TIterator Make_Iterator(TContainer* container, size_t index)
     { 
         //.Value = container->Index_Get(container, &(TGeneric){ .Data = &index, .Rtti_ = Rtti(size_t) }),
         .Current_Index = index, 
-        .Container_Type = container->Container_Type 
     };
 }
 

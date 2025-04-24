@@ -41,7 +41,7 @@ void TTuple_Set(TTuple* tuple, size_t index, TGeneric* new_Value)
         fprintf(stderr, "ERROR: Index is out of range! TTuple.Super.Size: %zu. Index argument: %zu.\n", super->Size, index);
     }
 
-    if (TString_Equal(&new_Value->Rtti_.Type, &NT_TString("NULL")))
+    if (TString_Equal(&new_Value->Rtti_.Type, NT_TString("NULL")))
     {
         if (tuple->Array[index].Is_Nothing == false)
             super->Size--;

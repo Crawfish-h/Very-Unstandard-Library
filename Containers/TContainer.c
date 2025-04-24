@@ -19,7 +19,7 @@ void TContainer_Init
     container->Type_Capacity = type_Count * 2;
     container->Capacity = capcity;
     if (container->Type_Capacity == 0) container->Type_Capacity = 4;
-    if (container->Capacity == 0) container->Capacity = 1;
+    if (container->Capacity == 0) container->Capacity = 4;
     container->Types = container->Allocator.Calloc(container->Type_Capacity, container->Type_Capacity * sizeof(TRtti));
     Err_Alloc(container->Types);
     container->Get = container_Get;
@@ -107,7 +107,7 @@ void TContainer_Add_If_Pointer(TContainer* container, TGeneric* value, TGeneric*
     {
         value->Data = container->Allocator.Calloc(1, new_Value->Rtti_.Size_Of);
         value->Is_Allocated = true;
-        container->Allocator.Memcpy(value->Data, new_Value->Data, new_Value->Rtti_.Size_Of);
+        container->Allocator.Memmove(value->Data, new_Value->Data, new_Value->Rtti_.Size_Of);
     }
 }
 

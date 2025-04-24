@@ -28,3 +28,5 @@ void* TLinked_List_Get(TLinked_List* list, ssize_t index);
 
 // Returns the type information along with the data at [index].
 TGeneric* TLinked_List_Get1(TLinked_List* list, ssize_t index);
+
+void TLinked_List_Free(TLinked_List* list);
