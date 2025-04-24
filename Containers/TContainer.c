@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "TIterator.h"
 #include "../Utility.h"
+#include "../Reflection.h"
+#include "../TGeneric.h"
 
 void TContainer_Init
 (

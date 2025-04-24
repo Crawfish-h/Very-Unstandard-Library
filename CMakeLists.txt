@@ -12,15 +12,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Utility.c
     ${PROJECT_SOURCE_DIR}/TGeneric.h
     ${PROJECT_SOURCE_DIR}/TGeneric.c
-    ${PROJECT_SOURCE_DIR}/TObject.h
-    ${PROJECT_SOURCE_DIR}/TObject.c
-    ${PROJECT_SOURCE_DIR}/Vutd_Macros.h
     ${PROJECT_SOURCE_DIR}/TString.h
     ${PROJECT_SOURCE_DIR}/TString.c
-    ${PROJECT_SOURCE_DIR}/Containers/TIterator.h
-    ${PROJECT_SOURCE_DIR}/Containers/TIterator.c
-    ${PROJECT_SOURCE_DIR}/Containers/It_Array.h
-    ${PROJECT_SOURCE_DIR}/Containers/It_Array.c
     ${PROJECT_SOURCE_DIR}/Containers/TC_Allocator.h
     ${PROJECT_SOURCE_DIR}/Containers/TC_Allocator.c
     ${PROJECT_SOURCE_DIR}/Containers/TContainer.h
@@ -39,8 +32,6 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Containers/TTree.c
     ${PROJECT_SOURCE_DIR}/Containers/TMap.h
     ${PROJECT_SOURCE_DIR}/Containers/TMap.c
-    ${PROJECT_SOURCE_DIR}/VMemory.h
-    ${PROJECT_SOURCE_DIR}/VMemory.c
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE -fms-extensions)

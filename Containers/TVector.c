@@ -5,7 +5,6 @@
 #include <string.h>
 #include "../Reflection.h"
 #include "TContainer.h"
-#include "It_Array.h"
 
 typedef struct TVector
 {

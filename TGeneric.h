@@ -8,7 +8,6 @@
 typedef struct TGeneric
 {    
     TGeneric (*Dtor)(TGeneric* data);
-    TManip_Fns* Manip_Fns;
     bool Is_Allocated;
     TRtti Rtti_;
     void* Data;

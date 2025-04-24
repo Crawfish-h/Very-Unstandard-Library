@@ -6,12 +6,6 @@ typedef struct TString TString;
 typedef TString Type_Name;
 typedef struct TArray TArray;
 typedef struct TGeneric TGeneric;
-typedef struct TObject TObject;
-typedef struct TManip_Fns TManip_Fns;
-
-typedef TGeneric (*Generic_Function)(int arg_Count, ...);
-
-typedef void* TArg[];
 
 /*
     Generic_Function Ctor;
