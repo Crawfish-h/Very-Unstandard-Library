@@ -99,7 +99,7 @@ void TTree_Multi(TTree* tree, size_t value_Count, ...)
     {
         super->Size++;
         TTree_Node* first_Node = super->Allocator.Calloc(1, sizeof(TTree_Node));
-        TVector_Push(tree->Nodes, TGL(TTree_Node*, first_Node));
+        TVector_Push(tree->Nodes, TG(TTree_Node*, first_Node));
         tree->First = first_Node;
         first_Node->Children = TVector_Init(1, 0, Rtti(TTree_Node*));
         TTree_Argument* tree_Arg = va_arg(va_Args, TTree_Argument*);
@@ -112,14 +112,14 @@ void TTree_Multi(TTree* tree, size_t value_Count, ...)
     for (size_t i = 0; i < value_Count; i++)
     {
         TTree_Node* node = super->Allocator.Calloc(1, sizeof(TTree_Node));
-        TVector_Push(tree->Nodes, TGL(TTree_Node*, node));
+        TVector_Push(tree->Nodes, TG(TTree_Node*, node));
         node->Children = TVector_Init(1, 0, Rtti(TTree_Node*));
         TTree_Argument* tree_Arg = va_arg(va_Args, TTree_Argument*);
         Type_Check(&tree_Arg->New_Value->Rtti_.Type, super->Types, super->Type_Count);
         node->Index = tree_Arg->New_Node_Index;
         TContainer_Add_If_Pointer(super, &node->Value, tree_Arg->New_Value);
         TTree_Node* parent_Node = TTree_Get_Node_DFS(tree, tree_Arg->Parent_Index);
-        TVector_Push(parent_Node->Children, TGL(TTree_Node*, node));
+        TVector_Push(parent_Node->Children, TG(TTree_Node*, node));
         super->Size++;
     }
 
@@ -192,7 +192,7 @@ void Tree_Remove(TTree* tree, ssize_t index)
     {
         for (size_t i = 0; i < TContainer_Size((TContainer*)found_Node->Children); i++)
         {
-            TVector_Push(replacement_Node->Children, TGL(TTree_Node*, TVector_Get(found_Node->Children, i)));
+            TVector_Push(replacement_Node->Children, TG(TTree_Node*, TVector_Get(found_Node->Children, i)));
         }
     }
 

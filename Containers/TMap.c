@@ -73,7 +73,7 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...)
         //printf("value type: %s.\n", pair->Second.Rtti_.Type.Str);
         size_t index = 0;
         if (cont->Size > 0) index = cont->Size - 1;
-        cont->Add(cont, index, TGL(TPair, pair));
+        cont->Add(cont, index, TG(TPair, pair));
     }
 
     va_end(arg_List);

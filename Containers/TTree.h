@@ -30,7 +30,7 @@ typedef struct TTree_Argument
     { \
         .Parent_Index = parent_Index, \
         .New_Node_Index = new_Node_Index, \
-        .New_Value = TGL(type_Of_Value, (the_Value)) \
+        .New_Value = TG(type_Of_Value, (the_Value)) \
     }
 
 // All types need to come before the values.

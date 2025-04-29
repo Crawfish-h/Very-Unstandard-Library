@@ -22,12 +22,12 @@ inline TGeneric TG2(TRtti* rtti, void* data, bool is_Allocated, TGeneric (*dtor)
 
 // [TGeneric.Data] points to a copy of [data]. 
 // Only valid with rvalues.
-#define TGR(type, data) \
-    &(TGeneric){ .Data = &(struct { type vul_Data_Value_; }){ data }.vul_Data_Value_, .Rtti_ = Rtti(type) }
+//#define TGR(type, data) \
+//    &(TGeneric){ .Data = &(struct { type vul_Data_Value_; }){ data }.vul_Data_Value_, .Rtti_ = Rtti(type) }
 
 // [TGeneric.Data] points to [data]. 
 // Only valid with lvalues.
-#define TGL(type, data) \
+#define TG(type, data) \
     &(TGeneric){ .Data = data, .Rtti_ = Rtti(type) }
 
 /*&(struct { TGeneric Generic_Field; }) \

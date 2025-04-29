@@ -72,5 +72,5 @@ typedef struct TMaybe
 #define Num_Args(args) (sizeof((TGeneric[]){args})/sizeof(TGeneric))
 
 // Converts an r value to a l value's address.
-#define LV(r_Value) &(typeof(r_Value)[]){ r_Value }
+#define LV(r_Value) (typeof(r_Value)[]){ r_Value }
 
