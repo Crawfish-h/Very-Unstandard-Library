@@ -32,6 +32,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Containers/TTree.c
     ${PROJECT_SOURCE_DIR}/Containers/TMap.h
     ${PROJECT_SOURCE_DIR}/Containers/TMap.c
+    ${PROJECT_SOURCE_DIR}/Unit_Tests/TTree_Test.h
+    ${PROJECT_SOURCE_DIR}/Unit_Tests/TTree_Test.c
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE -fms-extensions)

@@ -10,7 +10,8 @@ typedef struct TTree
 {
     TContainer Super;
     TTree_Node* First;
-    TVector* Ends;
+    TTree_Node* Last;
+    TVector* Nodes;
     bool (*Sort)(size_t index_0, size_t idnex_1);
 } TTree;
 
@@ -29,6 +30,7 @@ TTree* TTree_Init(size_t type_Count, size_t value_Count, ...)
     Err_Alloc(tree);
     TContainer* super = &tree->Super;
     TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
+    tree->Nodes = TVector_Init(1, 0, Rtti(TTree_Node*));
 
     va_list va_Args;
     value_Count += type_Count;
@@ -97,6 +99,7 @@ void TTree_Multi(TTree* tree, size_t value_Count, ...)
     {
         super->Size++;
         TTree_Node* first_Node = super->Allocator.Calloc(1, sizeof(TTree_Node));
+        TVector_Push(tree->Nodes, TGL(TTree_Node*, first_Node));
         tree->First = first_Node;
         first_Node->Children = TVector_Init(1, 0, Rtti(TTree_Node*));
         TTree_Argument* tree_Arg = va_arg(va_Args, TTree_Argument*);
@@ -109,6 +112,7 @@ void TTree_Multi(TTree* tree, size_t value_Count, ...)
     for (size_t i = 0; i < value_Count; i++)
     {
         TTree_Node* node = super->Allocator.Calloc(1, sizeof(TTree_Node));
+        TVector_Push(tree->Nodes, TGL(TTree_Node*, node));
         node->Children = TVector_Init(1, 0, Rtti(TTree_Node*));
         TTree_Argument* tree_Arg = va_arg(va_Args, TTree_Argument*);
         Type_Check(&tree_Arg->New_Value->Rtti_.Type, super->Types, super->Type_Count);
@@ -129,7 +133,9 @@ void TTree_Add(TTree* tree, TTree_Argument* new_Value)
 
 void TTree_Add_Define(TTree* tree, ssize_t index, TGeneric* new_Value)
 {
-    TTree_Multi(tree, 1, &(TTree_Argument){ .Parent_Index = tree->First->Index, .New_Node_Index = index, .New_Value = new_Value });
+    ssize_t parent_Index = 0;
+    if (tree->First != NULL) parent_Index = tree->First->Index;
+    TTree_Multi(tree, 1, &(TTree_Argument){ .Parent_Index = parent_Index, .New_Node_Index = index, .New_Value = new_Value });
 }
 
 void* TTree_Get(TTree* tree, ssize_t index)
@@ -140,4 +146,75 @@ void* TTree_Get(TTree* tree, ssize_t index)
 TGeneric* TTree_Get_Info(TTree* tree, ssize_t index)
 {
     return &TTree_Get_Node_DFS(tree, index)->Value;
+}
+
+void TTree_Free_Node(TTree_Node* node)
+{
+    /*if (node->Value.Is_Allocated == true)
+    {
+        if (node->Value.Dtor == NULL)
+        {
+            free(node->Value.Data);
+        }else
+        {
+            node->Value.Dtor(&node->Value);
+        }
+    }*/
+
+    TContainer_Remove_TGeneric_Element(&node->Value);
+    TVector_Free(node->Children);
+    free(node);
+}
+
+void Tree_Remove(TTree* tree, ssize_t index)
+{
+    TTree_Node* found_Node = NULL;
+    TTree_Node* replacement_Node = NULL;
+    if (tree->First->Index == index)
+    {
+        if (TContainer_Size((TContainer*)tree->First->Children) > 0)
+        {
+            replacement_Node = TVector_Get(tree->First->Children, 0);
+        }else
+        {
+            TTree_Free_Node(tree->First);
+            return;
+        }
+
+        found_Node = tree->First;
+    }else
+    {
+        found_Node = TTree_Get(tree, index);
+        replacement_Node = found_Node->Parent;
+    }
+
+    if (TContainer_Size((TContainer*)found_Node->Children) > 0)
+    {
+        for (size_t i = 0; i < TContainer_Size((TContainer*)found_Node->Children); i++)
+        {
+            TVector_Push(replacement_Node->Children, TGL(TTree_Node*, TVector_Get(found_Node->Children, i)));
+        }
+    }
+
+    for (size_t i = 0; i < TContainer_Size((TContainer*)replacement_Node->Children); i++)
+    {
+        if (((TTree_Node*)TVector_Get(replacement_Node->Children, i))->Index == index)
+        {
+            TVector_Remove_At(replacement_Node->Children, i);
+            break;
+        }
+    }
+    
+    TTree_Free_Node(found_Node);
+}
+
+void TTree_Free(TTree* tree)
+{
+    for (size_t i = 0; i < TContainer_Size((TContainer*)tree->Nodes); i++)
+    {
+        TTree_Free_Node(TVector_Get(tree->Nodes, i));
+    }
+
+    TVector_Free(tree->Nodes);
+    free(tree);
 }

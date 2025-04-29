@@ -112,6 +112,24 @@ void TContainer_Add_If_Pointer(TContainer* container, TGeneric* value, TGeneric*
     }
 }
 
+bool TContainer_Remove_TGeneric_Element(TGeneric* element)
+{
+    if (element->Dtor == NULL)
+    {
+        if (element->Is_Allocated == true)
+        {
+            free(element->Data);
+            return true;
+        }
+    } else
+    {
+        element->Dtor(element);
+        return true;
+    }
+
+    return false;
+}
+
 bool TContainer_Add_Type(TContainer* container, TRtti* new_Type)
 {
     for (size_t i; i < container->Type_Count; i++)

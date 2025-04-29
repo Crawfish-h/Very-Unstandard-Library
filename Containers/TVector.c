@@ -168,7 +168,7 @@ void TVector_Clear(TVector* vector)
     TContainer* super = &vector->Super;
     for (size_t i = 0; i < super->Size; i++)
     {
-        if (vector->Elements[i].Dtor == NULL)
+        /*if (vector->Elements[i].Dtor == NULL)
         {
             if (vector->Elements[i].Is_Allocated == true)
             {
@@ -177,7 +177,8 @@ void TVector_Clear(TVector* vector)
         } else
         {
             vector->Elements[i].Dtor(&vector->Elements[i]);
-        }
+        }*/
+       TContainer_Remove_TGeneric_Element(&vector->Elements[i]);
     }
 
     free(vector->Elements);
@@ -240,7 +241,7 @@ void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Alloca
 
         if (free_Allocated == true)
         {
-            if (vector->Elements[index].Dtor == NULL)
+            /*if (vector->Elements[index].Dtor == NULL)
             {
                 if (vector->Elements[index].Is_Allocated == true)
                 {
@@ -249,7 +250,8 @@ void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Alloca
             } else
             {
                 vector->Elements[index].Dtor(&vector->Elements[index]);
-            }
+            }*/
+            TContainer_Remove_TGeneric_Element(&vector->Elements[index]);
         }
 
         super->Size--;

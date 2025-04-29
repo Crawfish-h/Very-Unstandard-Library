@@ -50,6 +50,9 @@ void* TContainer_Array_Alloc_Again(TContainer* container, size_t new_Capacity, T
 
 void TContainer_Add_If_Pointer(TContainer* container, TGeneric* value, TGeneric* new_Value);
 
+// returns [true] if [element] was removed.
+bool TContainer_Remove_TGeneric_Element(TGeneric* element);
+
 // Returns true if a [TRtti] value was added to [container->Types].
 bool TContainer_Add_Type(TContainer* container, TRtti* new_Type);
 

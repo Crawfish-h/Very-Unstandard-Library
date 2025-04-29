@@ -48,3 +48,7 @@ void* TTree_Get(TTree* tree, ssize_t index);
 
 // Returns the type information along with the data at [index].
 TGeneric* TTree_Get_Info(TTree* tree, ssize_t index);
+
+void Tree_Remove(TTree* tree, ssize_t index);
+
+void TTree_Free(TTree* tree);

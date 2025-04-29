@@ -165,7 +165,8 @@ void TDoubly_Linked_List_Free(TDoubly_Linked_List* list)
     for (size_t i = list->Super.Size - 1; i > -1; i--)
     {
         TDoubly_Node* node = TDoubly_Linked_List_Get_Node(list, i);
-        if (node->Value.Dtor != NULL) node->Value.Dtor(NULL);
+        //if (node->Value.Dtor != NULL) node->Value.Dtor(NULL);
+        TContainer_Remove_TGeneric_Element(&node->Value);
         free(node);
     }
 
