@@ -31,6 +31,11 @@ void* TDoubly_Linked_List_Get_Stack_Test(TDoubly_Linked_List* list, ssize_t inde
     return TDoubly_Linked_List_Get(list, index);
 }
 
+void* TMap_Get_Stack_Test(TMap* map, TString* key)
+{
+    return TMap_Get(map, key);
+}
+
 /*#define Make_Container_Test(add_0, add_1, add_2, add_3, add_4, add_5, init_Args, init_Fn, container_Type, multi_Fn, add_Fn, get_0, get_1, get_2, get_3, get_4, get_5) \
     container_Type* container = init_Fn \
     ( \
@@ -134,6 +139,7 @@ void TVector_Test()
     assert(TString_Equal((TString*)TVector_Get_Stack_Test(vector, 4), NT_TString("abcdefg")));
     assert(strcmp((char*)TVector_Get_Stack_Test(vector, 5), "www4") == 0);
 
+    TVector_Free(vector);
     printf("TVector_Test(): success!\n");
 }
 
@@ -196,6 +202,7 @@ void TTree_Test()
     assert(strcmp((char*)TTree_Get_Stack_Test(tree, 33), "www3") == 0);
     assert(TString_Equal((TString*)TTree_Get_Stack_Test(tree, 1), NT_TString("A23T")));
 
+    TTree_Free(tree);
     printf("TTree_Test(): success!\n");
 }
 
@@ -258,6 +265,7 @@ void TLinked_List_Test()
     assert(strcmp((char*)TLinked_List_Get_Stack_Test(list, 4), "www4") == 0);
     assert(TString_Equal((TString*)TLinked_List_Get_Stack_Test(list, 5), NT_TString("abcdefg")));
 
+    TLinked_List_Free(list);
     printf("TLinked_List_Test(): success!\n");
 }
 
@@ -319,14 +327,16 @@ void TDoubly_Linked_List_Test()
     assert(*(float*)TDoubly_Linked_List_Get_Stack_Test(list, 3) == 90007.7f);
     assert(strcmp((char*)TDoubly_Linked_List_Get_Stack_Test(list, 4), "www4") == 0);
     assert(TString_Equal((TString*)TDoubly_Linked_List_Get_Stack_Test(list, 5), NT_TString("abcdefg")));
+
+    TDoubly_Linked_List_Free(list);
     printf("TDoubly_Linked_List_Test(): success!\n");
 }
 
-void TMap_Test()
+void TMap_Test(void* container)
 {
     TMap* map = TMap_Init
     (
-        (TContainer*)TDoubly_Linked_List_Init(0, 0), 
+        (TContainer*)container, 
         4, 4,
         Rtti(int),
         Rtti(TString),
@@ -385,5 +395,16 @@ void TMap_Test()
     assert(*(int*)TMap_Get(map, NT_TString("Multi Key 0")) == 110);
     assert(strcmp((char*)TMap_Get(map, NT_TString("Multi Key 1")), "an array of characters") == 0);
     assert(TString_Equal((TString*)TMap_Get(map, NT_TString("Multi Key 2")), NT_TString("W23")));
+
+    assert(*(int*)TMap_Get_Stack_Test(map, NT_TString("First Key")) == 32);
+    assert(*(int*)TMap_Get_Stack_Test(map, NT_TString("Second Key")) == 2000);
+    assert(TString_Equal((TString*)TMap_Get_Stack_Test(map, NT_TString("Second to last")), NT_TString("Value")));
+    assert(strcmp((char*)TMap_Get_Stack_Test(map, NT_TString("Final")), "The last value.") == 0);
+    assert((*(float*)TMap_Get_Stack_Test(map, NT_TString("TMap_Add Key"))) == 233.3f);
+    assert(*(int*)TMap_Get_Stack_Test(map, NT_TString("Multi Key 0")) == 110);
+    assert(strcmp((char*)TMap_Get_Stack_Test(map, NT_TString("Multi Key 1")), "an array of characters") == 0);
+    assert(TString_Equal((TString*)TMap_Get_Stack_Test(map, NT_TString("Multi Key 2")), NT_TString("W23")));
+
+    
     printf("TMap_Test(): success!\n");
 }

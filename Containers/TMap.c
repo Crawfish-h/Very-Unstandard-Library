@@ -58,6 +58,15 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...)
     for (size_t i = 0; i < value_Count; i++)
     {
         TPair* pair = va_arg(arg_List, TPair*);
+        for (size_t j = 0; j < map->Container->Size; j++)
+        {
+            TPair* pair_Cmp = map->Container->Get(map->Container, j)->Data;
+            if (TString_Equal(pair_Cmp->First.Data, pair->First.Data) == true)
+            {
+                fprintf(stderr, "ERROR tried adding a key that was already inside the TMap.");
+            }
+        }
+
         Type_Check(&pair->Second.Rtti_.Type, cont->Types, cont->Type_Count);
         TString* key = pair->First.Data;
         char* temp_Key_Str = key->Str;
@@ -84,8 +93,7 @@ TPair* TMap_Get_Info(TMap* map, TString* key)
     for (size_t i = 0; i < map->Container->Size; i++)
     {
         TPair* pair = map->Container->Get(map->Container, i)->Data;
-        TString* indexed_Key = pair->First.Data;
-        if (TString_Equal(indexed_Key, key) == true)
+        if (TString_Equal(pair->First.Data, key) == true)
         {
             return pair;
         }

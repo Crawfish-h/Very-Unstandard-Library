@@ -43,11 +43,16 @@ void TTree_Add(TTree* tree, TTree_Argument* new_Value);
 
 void TTree_Add_Define(TTree* tree, ssize_t index, TGeneric* tree_Arg);
 
-// Returns the data at [index].
+// Returns the data at [index] using depth first search.
 void* TTree_Get(TTree* tree, ssize_t index);
 
 // Returns the type information along with the data at [index].
 TGeneric* TTree_Get_Info(TTree* tree, ssize_t index);
+
+// Returns the data at [index] using a [TVector].
+void* TTree_Vector_Get(TTree* tree, ssize_t index);
+
+TGeneric* TTree_Vector_Get_Info(TTree* tree, ssize_t index);
 
 void Tree_Remove(TTree* tree, ssize_t index);
 

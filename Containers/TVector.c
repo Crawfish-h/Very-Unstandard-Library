@@ -140,7 +140,6 @@ void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value)
                 j++;
             }else
             {
-                printf("value added\n");
                 temp_Array[i] = *value;
                 if (Is_Pointer(value->Rtti_) == false)
                 {
@@ -168,16 +167,6 @@ void TVector_Clear(TVector* vector)
     TContainer* super = &vector->Super;
     for (size_t i = 0; i < super->Size; i++)
     {
-        /*if (vector->Elements[i].Dtor == NULL)
-        {
-            if (vector->Elements[i].Is_Allocated == true)
-            {
-                free(vector->Elements[i].Data);
-            }
-        } else
-        {
-            vector->Elements[i].Dtor(&vector->Elements[i]);
-        }*/
        TContainer_Remove_TGeneric_Element(&vector->Elements[i]);
     }
 
@@ -206,25 +195,6 @@ void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Alloca
         initial_Index = super->Size - index;
     }
 
-
-    /*TGeneric return_Gen = (TGeneric){  };
-    for (size_t i = initial_Index; i < super->Size; i++)
-    {
-        if (i == index)
-        {
-            return_Gen = vector->Elements[i];
-
-            if (vector->Elements[i].Is_Allocated == true && free_Allocated == true)
-            {
-                free(vector->Elements[i].Data);
-            }
-
-            super->Size--;
-            vector->Elements[i] = (TGeneric){  };
-        }
-    }*/
-
-    
     if (index < super->Size - 1)
     {
         Array_Of(TGeneric) temp_Array = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
@@ -257,6 +227,9 @@ void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Alloca
         super->Size--;
         free(vector->Elements);
         vector->Elements = temp_Array;
+    }else
+    {
+        TVector_Pop(vector);
     }
 }
 
@@ -273,12 +246,7 @@ void TVector_Remove_At1(TVector* vector, ssize_t index)
 void TVector_Pop(TVector* vector)
 {
     TContainer* super = &vector->Super;
-    if (vector->Elements[super->Size - 1].Is_Allocated == true)
-    {
-        free(vector->Elements[super->Size - 1].Data);
-        vector->Elements[super->Size - 1] = (TGeneric){ NULL };
-    }
-
+    TContainer_Remove_TGeneric_Element(&vector->Elements[super->Size - 1]);
     super->Size--;
 }
 
