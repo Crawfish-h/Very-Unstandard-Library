@@ -11,7 +11,7 @@ typedef struct TLinked_List
     TNode* Last;
 } TLinked_List;
 
-Define_Container_Get(TLinked_List, TLinked_List_Get1)
+Define_Container_Get(TLinked_List, TLinked_List_Get_Info)
 Define_Container_Add(TLinked_List, TLinked_List_Add)
 
 TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
@@ -134,7 +134,7 @@ void* TLinked_List_Get(TLinked_List* list, ssize_t index)
     return TLinked_List_Get_Node(list, index)->Value.Data;
 }
 
-TGeneric* TLinked_List_Get1(TLinked_List* list, ssize_t index)
+TGeneric* TLinked_List_Get_Info(TLinked_List* list, ssize_t index)
 {
     return &TLinked_List_Get_Node(list, index)->Value;
 }

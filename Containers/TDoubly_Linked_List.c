@@ -11,7 +11,7 @@ typedef struct TDoubly_Linked_List
     TDoubly_Node* Last;
 } TDoubly_Linked_List;
 
-Define_Container_Get(TDoubly_Linked_List, TDoubly_Linked_List_Get1)
+Define_Container_Get(TDoubly_Linked_List, TDoubly_Linked_List_Get_Info)
 Define_Container_Add(TDoubly_Linked_List, TDoubly_Linked_List_Add)
 
 TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Count, ...)
@@ -155,7 +155,7 @@ void* TDoubly_Linked_List_Get(TDoubly_Linked_List* list, ssize_t index)
     return TDoubly_Linked_List_Get_Node(list, index)->Value.Data;
 }
 
-TGeneric* TDoubly_Linked_List_Get1(TDoubly_Linked_List* list, ssize_t index)
+TGeneric* TDoubly_Linked_List_Get_Info(TDoubly_Linked_List* list, ssize_t index)
 {
     return &TDoubly_Linked_List_Get_Node(list, index)->Value;
 }

@@ -65,10 +65,16 @@ void* TDoubly_Linked_List_Get_Stack_Test(TDoubly_Linked_List* list, ssize_t inde
     assert(strcmp((char*)get_4 ## Stack_Test, "www3") == 0); \
     assert(TString_Equal((TString*)get_5 ## Stack_Test, NT_TString("A23T")));*/
 
+void Container_Type_Test(Array_Of(TRtti) expected_Types, Array_Of(TRtti) actual_Types, size_t count)
+{
+    for (size_t i = 0; i < count; i++)
+    {
+        assert(Compare_Types(&expected_Types[i], &actual_Types[i]));
+    }
+}
 
 void TVector_Test()
 {
-
     TVector* vector = TVector_Init
     (
         3, 3,
@@ -88,6 +94,29 @@ void TVector_Test()
     );
 
     TVector_Push(vector, TG(char*, "www4"));
+
+    Container_Type_Test
+    (
+        (TRtti[])
+        {
+            Rtti(char*),
+            Rtti(float),
+            Rtti(TString),
+            Rtti(float),
+            Rtti(TString),
+            Rtti(char*)
+        },
+        (TRtti[])
+        {
+            TVector_Get_Info(vector, 0)->Rtti_,
+            TVector_Get_Info(vector, 1)->Rtti_,
+            TVector_Get_Info(vector, 2)->Rtti_,
+            TVector_Get_Info(vector, 3)->Rtti_,
+            TVector_Get_Info(vector, 4)->Rtti_,
+            TVector_Get_Info(vector, 5)->Rtti_,
+        },
+        6
+    );
 
     assert(strcmp((char*)TVector_Get(vector, 0), "A new string") == 0);
     assert(*(float*)TVector_Get(vector, 1) == 400.5f);
@@ -128,6 +157,29 @@ void TTree_Test()
 
     TTree_Add(tree, TTree_Arg(0, 1, TString, NT_TString("A23T")));
 
+    Container_Type_Test
+    (
+        (TRtti[])
+        {
+            Rtti(char*),
+            Rtti(int),
+            Rtti(TString),
+            Rtti(int),
+            Rtti(char*),
+            Rtti(TString)
+        },
+        (TRtti[])
+        {
+            TTree_Get_Info(tree, 0)->Rtti_,
+            TTree_Get_Info(tree, 200)->Rtti_,
+            TTree_Get_Info(tree, -6000)->Rtti_,
+            TTree_Get_Info(tree, 100)->Rtti_,
+            TTree_Get_Info(tree, 33)->Rtti_,
+            TTree_Get_Info(tree, 1)->Rtti_
+        },
+        6
+    );
+
     assert(strcmp((char*)TTree_Get(tree, 0), "A string") == 0);
     assert(*(int*)TTree_Get(tree, 200) == 200);
     assert(TString_Equal((TString*)TTree_Get(tree, -6000), NT_TString("www.google.com")));
@@ -167,6 +219,29 @@ void TLinked_List_Test()
 
     TLinked_List_Add(list, 4, TG(char*, "www4"));
 
+    Container_Type_Test
+    (
+        (TRtti[])
+        {
+            Rtti(char*),
+            Rtti(float),
+            Rtti(TString),
+            Rtti(float),
+            Rtti(char*),
+            Rtti(TString)
+        },
+        (TRtti[])
+        {
+            TLinked_List_Get_Info(list, 0)->Rtti_,
+            TLinked_List_Get_Info(list, 1)->Rtti_,
+            TLinked_List_Get_Info(list, 2)->Rtti_,
+            TLinked_List_Get_Info(list, 3)->Rtti_,
+            TLinked_List_Get_Info(list, 4)->Rtti_,
+            TLinked_List_Get_Info(list, 5)->Rtti_
+        },
+        6
+    );
+
     assert(strcmp((char*)TLinked_List_Get(list, 0), "A new string") == 0);
     assert(*(float*)TLinked_List_Get(list, 1) == 400.5f);
     assert(TString_Equal((TString*)TLinked_List_Get(list, 2), NT_TString("www.bing.com")));
@@ -205,6 +280,29 @@ void TDoubly_Linked_List_Test()
     );
 
     TDoubly_Linked_List_Add(list, 4, TG(char*, "www4"));
+
+    Container_Type_Test
+    (
+        (TRtti[])
+        {
+            Rtti(char*),
+            Rtti(float),
+            Rtti(TString),
+            Rtti(float),
+            Rtti(char*),
+            Rtti(TString)
+        },
+        (TRtti[])
+        {
+            TDoubly_Linked_List_Get_Info(list, 0)->Rtti_,
+            TDoubly_Linked_List_Get_Info(list, 1)->Rtti_,
+            TDoubly_Linked_List_Get_Info(list, 2)->Rtti_,
+            TDoubly_Linked_List_Get_Info(list, 3)->Rtti_,
+            TDoubly_Linked_List_Get_Info(list, 4)->Rtti_,
+            TDoubly_Linked_List_Get_Info(list, 5)->Rtti_
+        },
+        6
+    );
 
     assert(strcmp((char*)TDoubly_Linked_List_Get(list, 0), "A new string") == 0);
     assert(*(float*)TDoubly_Linked_List_Get(list, 1) == 400.5f);

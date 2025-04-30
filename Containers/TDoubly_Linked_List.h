@@ -28,6 +28,6 @@ bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, ssize_t index, size_t 
 void* TDoubly_Linked_List_Get(TDoubly_Linked_List* list, ssize_t index);
 
 // Returns the type information along with the data at [index].
-TGeneric* TDoubly_Linked_List_Get1(TDoubly_Linked_List* list, ssize_t index);
+TGeneric* TDoubly_Linked_List_Get_Info(TDoubly_Linked_List* list, ssize_t index);
 
 void TDoubly_Linked_List_Free(TDoubly_Linked_List* list);
