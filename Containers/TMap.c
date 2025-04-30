@@ -79,7 +79,7 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...)
     va_end(arg_List);
 }
 
-TPair TMap_Get_Info(TMap* map, TString* key)
+TPair* TMap_Get_Info(TMap* map, TString* key)
 {
     for (size_t i = 0; i < map->Container->Size; i++)
     {
@@ -87,16 +87,16 @@ TPair TMap_Get_Info(TMap* map, TString* key)
         TString* indexed_Key = pair->First.Data;
         if (TString_Equal(indexed_Key, key) == true)
         {
-            return *pair;
+            return pair;
         }
     }
 
     fprintf(stderr, "ERROR: could not find key '%s' in [TMap].\n", key->Str);
     exit(EXIT_FAILURE);
-    return (TPair){  };
+    return NULL;
 }
 
 void* TMap_Get(TMap* map, TString* key)
 {
-    return TMap_Get_Info(map, key).Second.Data;
+    return TMap_Get_Info(map, key)->Second.Data;
 }

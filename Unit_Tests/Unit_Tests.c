@@ -3,11 +3,13 @@
 #include "../Containers/TVector.h"
 #include "../Containers/TLinked_List.h"
 #include "../Containers/TDoubly_Linked_List.h"
+#include "../Containers/TMap.h"
 #include "../Reflection.h"
 #include "../TString.h"
 #include "../Utility.h"
 #include <assert.h>
 #include <string.h>
+#include <stdlib.h>
 
 void* TTree_Get_Stack_Test(TTree* tree, ssize_t index)
 {
@@ -318,4 +320,70 @@ void TDoubly_Linked_List_Test()
     assert(strcmp((char*)TDoubly_Linked_List_Get_Stack_Test(list, 4), "www4") == 0);
     assert(TString_Equal((TString*)TDoubly_Linked_List_Get_Stack_Test(list, 5), NT_TString("abcdefg")));
     printf("TDoubly_Linked_List_Test(): success!\n");
+}
+
+void TMap_Test()
+{
+    TMap* map = TMap_Init
+    (
+        (TContainer*)TDoubly_Linked_List_Init(0, 0), 
+        4, 4,
+        Rtti(int),
+        Rtti(TString),
+        Rtti(char*),
+        Rtti(float*),
+        TP(TString, NT_TString("First Key"), int, LV(32)),
+        TP(TString, NT_TString("Second Key"), int, LV(2000)),
+        TP(TString, NT_TString("Second to last"), TString, NT_TString("Value")),
+        TP(TString, NT_TString("Final"), char*, "The last value.")
+    );
+
+    TMap_Add(map, TP(TString, NT_TString("TMap_Add Key"), float*, malloc(sizeof(float))));
+    (*(float*)TMap_Get(map, NT_TString("TMap_Add Key"))) = 233.3f;
+    TMap_Get_Info(map, NT_TString("TMap_Add Key"))->Second.Is_Allocated = true;
+
+    TMap_Multi
+    (
+        map, 3, 
+        TP(TString, NT_TString("Multi Key 0"), int, LV(110)),
+        TP(TString, NT_TString("Multi Key 1"), char*, "an array of characters"),
+        TP(TString, NT_TString("Multi Key 2"), TString, NT_TString("W23"))
+    );
+
+    Container_Type_Test
+    (
+        (TRtti[])
+        {
+            Rtti(int),
+            Rtti(int),
+            Rtti(TString),
+            Rtti(char*),
+            Rtti(float*),
+            Rtti(int),
+            Rtti(char*),
+            Rtti(TString)
+        },
+        (TRtti[])
+        {
+            TMap_Get_Info(map, NT_TString("First Key"))->Second.Rtti_,
+            TMap_Get_Info(map, NT_TString("Second Key"))->Second.Rtti_,
+            TMap_Get_Info(map, NT_TString("Second to last"))->Second.Rtti_,
+            TMap_Get_Info(map, NT_TString("Final"))->Second.Rtti_,
+            TMap_Get_Info(map, NT_TString("TMap_Add Key"))->Second.Rtti_,
+            TMap_Get_Info(map, NT_TString("Multi Key 0"))->Second.Rtti_,
+            TMap_Get_Info(map, NT_TString("Multi Key 1"))->Second.Rtti_,
+            TMap_Get_Info(map, NT_TString("Multi Key 2"))->Second.Rtti_
+        },
+        8
+    );
+
+    assert(*(int*)TMap_Get(map, NT_TString("First Key")) == 32);
+    assert(*(int*)TMap_Get(map, NT_TString("Second Key")) == 2000);
+    assert(TString_Equal((TString*)TMap_Get(map, NT_TString("Second to last")), NT_TString("Value")));
+    assert(strcmp((char*)TMap_Get(map, NT_TString("Final")), "The last value.") == 0);
+    assert((*(float*)TMap_Get(map, NT_TString("TMap_Add Key"))) == 233.3f);
+    assert(*(int*)TMap_Get(map, NT_TString("Multi Key 0")) == 110);
+    assert(strcmp((char*)TMap_Get(map, NT_TString("Multi Key 1")), "an array of characters") == 0);
+    assert(TString_Equal((TString*)TMap_Get(map, NT_TString("Multi Key 2")), NT_TString("W23")));
+    printf("TMap_Test(): success!\n");
 }
