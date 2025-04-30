@@ -40,7 +40,7 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
 
     for (size_t i = type_Count + 1; i < value_Count; i++)
     {
-        TLinked_List_Multi(list, 1, 1, va_arg(va_Args, TGeneric*));
+        TLinked_List_Multi(list, -1, 1, va_arg(va_Args, TGeneric*));
     }
 
     va_end(va_Args);
