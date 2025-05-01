@@ -6,13 +6,13 @@
 #include "Reflection.h"
 #include "TGeneric.h"
 
-TString TString_Dyn(char* string)
+TString* TString_Dyn(char* string)
 {
-    TString tstring = (TString){  };
-    tstring.Super.Size = strlen(string);
-    tstring.Super.Capacity = tstring.Super.Size * 2;
-    tstring.Str = calloc(tstring.Super.Capacity, sizeof(char));
-    memcpy(tstring.Str, string, tstring.Super.Size);
+    TString* tstring = calloc(1, sizeof(TString));
+    tstring->Super.Size = strlen(string);
+    tstring->Super.Capacity = tstring->Super.Size * 2;
+    tstring->Str = calloc(tstring->Super.Capacity, sizeof(char));
+    memcpy(tstring->Str, string, tstring->Super.Size);
     return tstring;
 }
 
@@ -31,7 +31,8 @@ void TString_Insert0(TString* string, char* other_String, ssize_t index)
         exit(EXIT_FAILURE);
     }
 
-    char* temp_String = string->Str;
+    char* temp_String = calloc(super->Size, sizeof(char));
+    memcpy(temp_String, string->Str, super->Size);
 
     if (other_Length + super->Size >= super->Capacity)
     {
@@ -89,6 +90,12 @@ void TString_Insert1(TString* string, TString* other_String, ssize_t index)
     super->Size += other_String->Super.Size;
     string->Str[super->Size] = '\0';
     free(temp_String);
+}
+
+void TString_Free(TString* string)
+{
+    free(string->Str);
+    free(string);
 }
 
 bool TString_Equal(TString* str_0, TString* str_1)

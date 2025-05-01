@@ -408,3 +408,8 @@ void TMap_Test(void* container)
     
     printf("TMap_Test(): success!\n");
 }
+
+void Container_Test(TContainer* container)
+{
+    container->Add(container, 0, TG())
+}

@@ -145,7 +145,7 @@ void TTree_Add_Define(TTree* tree, ssize_t index, TGeneric* new_Value)
 {
     ssize_t parent_Index = 0;
     if (tree->First != NULL) parent_Index = ((TTree_Node*)TVector_Get(tree->Nodes, index))->Index;
-    TTree_Multi(tree, 1, &(TTree_Argument){ .Parent_Index = parent_Index, .New_Node_Index = index, .New_Value = new_Value });
+    TTree_Multi(tree, 1, &(TTree_Argument){ .Parent_Index = parent_Index, .New_Node_Index = tree->Super.Size, .New_Value = new_Value });
 }
 
 void* TTree_Get(TTree* tree, ssize_t index)

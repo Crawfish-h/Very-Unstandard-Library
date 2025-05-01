@@ -13,7 +13,31 @@
 typedef struct TMap
 {
     TContainer* Container;
+    void (*Add)(TContainer* container, ssize_t index, TGeneric* value);
+    TGeneric* (*Get)(TContainer* container, ssize_t index);
 } TMap;
+
+void TMap_Define_Add(void* map_Arg, ssize_t index, TGeneric* value)
+{
+    TMap* map = map_Arg;
+    TString* key = TString_Dyn("index ");
+
+    char index_Str[2];
+    sprintf(index_Str, "%lld", index);
+    TString_Insert0(key, index_Str, -1);
+
+    map->Container->Add
+    (
+        map->Container, index, 
+        TG(TPair, &((TPair){ .First = *TG(TString*, key), .Second = *value }))
+    );
+}
+
+TGeneric* TMap_Define_Get(void* map_Arg, ssize_t index)
+{
+    TMap* map = map_Arg;
+    return map->Container->Get( map->Container, index);
+}
 
 TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ...)
 {
@@ -23,7 +47,9 @@ TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ..
     va_start(arg_List, value_Count);
     value_Count -= type_Count;
     map->Container = container;
-
+    map->Add = TMap_Define_Add;
+    map->Get = TMap_Define_Get;
+    
     for (size_t i = 0; i < type_Count; i++)
     {
         TRtti rtti = va_arg(arg_List, TRtti);
