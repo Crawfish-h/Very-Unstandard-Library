@@ -5,14 +5,9 @@
 #include "../Utility.h"
 #include "../Reflection.h"
 #include "../TGeneric.h"
+#include "TIterator.h"
 
-void TContainer_Init
-(
-    TContainer* container, size_t capcity, size_t type_Count, 
-    TGeneric* (*container_Get)(TContainer* container, ssize_t index), 
-    void (*container_Add)(TContainer* container, ssize_t index, TGeneric* value),
-    TC_Allocator allocator
-)
+void TContainer_Init(TContainer* container, size_t capcity, size_t type_Count, TC_Allocator allocator)
 {
     container->Allocator = allocator;
     container->Size = 0;
@@ -23,8 +18,6 @@ void TContainer_Init
     if (container->Capacity == 0) container->Capacity = 4;
     container->Types = container->Allocator.Calloc(container->Type_Capacity, container->Type_Capacity * sizeof(TRtti));
     Err_Alloc(container->Types);
-    container->Get = container_Get;
-    container->Add = container_Add;
 }
 
 size_t TContainer_Grow(TContainer* container, size_t new_Capacity, TGeneric* arg)

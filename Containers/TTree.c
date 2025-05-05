@@ -5,16 +5,7 @@
 #include "TContainer.h"
 #include "../Reflection.h"
 #include "../TPair.h"
-
-typedef struct TTree
-{
-    TContainer Super;
-    TTree_Node* First;
-    TTree_Node* Last;
-    TVector* Nodes;
-    bool (*Sort)(size_t index_0, size_t idnex_1);
-} TTree;
-
+#include "TIterator.h"
 
 TTree_Argument TTree_ArgumentF(ssize_t parent_Index, ssize_t new_Node_Index, TGeneric* new_Value)
 {
@@ -29,7 +20,8 @@ TTree* TTree_Init(size_t type_Count, size_t value_Count, ...)
     TTree* tree = calloc(1, sizeof(TTree));
     Err_Alloc(tree);
     TContainer* super = &tree->Super;
-    TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
+    TContainer_Init(super, value_Count * 2, type_Count, TC_Allocator_Basic());
+    TIterator_Init(&tree->It, TG(TTree*, tree), &tree->Super.Size, Typed_Container_Get_Info, Typed_Container_Add);
     tree->Nodes = TVector_Init(1, 0, Rtti(TTree_Node*));
 
     va_list va_Args;
@@ -144,7 +136,7 @@ void TTree_Add(TTree* tree, TTree_Argument* new_Value)
 void TTree_Add_Define(TTree* tree, ssize_t index, TGeneric* new_Value)
 {
     ssize_t parent_Index = 0;
-    if (tree->First != NULL) parent_Index = ((TTree_Node*)TVector_Get(tree->Nodes, index))->Index;
+    if (tree->First != NULL) parent_Index = ((TTree_Node*)TVector_Get(tree->Nodes, index - 1))->Index;
     TTree_Multi(tree, 1, &(TTree_Argument){ .Parent_Index = parent_Index, .New_Node_Index = tree->Super.Size, .New_Value = new_Value });
 }
 

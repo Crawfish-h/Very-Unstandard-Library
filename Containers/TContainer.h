@@ -3,8 +3,8 @@
 #include "../Utility.h"
 #include "TC_Allocator.h"
 
-typedef struct TIterator TIterator;
 typedef struct TContainer TContainer;
+typedef struct TIterator TIterator;
 typedef struct TGeneric TGeneric;
 typedef struct TRtti TRtti;
 
@@ -18,23 +18,9 @@ typedef struct TContainer
     Array_Of(TRtti) Types;
     size_t Type_Count;
     size_t Type_Capacity;
-    TIterator (*C_It_Begin)(TContainer* container);
-    TIterator (*C_It_At)(TContainer* container, size_t index);
-    TIterator (*C_It_End)(TContainer* container);
-    void (*C_It_Next)(TContainer* container, TIterator* it);
-    bool (*C_It_Cmp)(TContainer* container, TIterator* it_0, TIterator* it_1);
-    void* (*Container_Realloc)(TContainer* container, size_t new_Capacity, TGeneric* arg);
-    TGeneric* (*Get)(TContainer* container, ssize_t index);
-    void (*Add)(TContainer* container, ssize_t index, TGeneric* value);
 } TContainer;
 
-void TContainer_Init
-(
-    TContainer* container, size_t capcity, size_t type_Count, 
-    TGeneric* (*container_Get)(TContainer* container, ssize_t index), 
-    void (*container_Add)(TContainer* container, ssize_t index, TGeneric* value),
-    TC_Allocator allocator
-);
+void TContainer_Init(TContainer* container, size_t capcity, size_t type_Count, TC_Allocator allocator);
 
 // Grows or shrinks the vector depending on the value of [new_Capacity]. 
 // Will free elements if the new capacity is smaller than the current size.
@@ -60,16 +46,16 @@ bool TContainer_Add_Type(TContainer* container, TRtti* new_Type);
 bool TContainer_Remove_Type(TContainer* container, TRtti* type);
 
 #define Define_Container_Get(container_Type, get_Function) \
-static TGeneric* Typed_Container_Get(TContainer* container, ssize_t index) \
+static TGeneric* Typed_Container_Get_Info(TIterator* it, ssize_t index) \
 { \
-    container_Type* casted_Container = (container_Type*)container; \
+    container_Type* casted_Container = (container_Type*)it->Container.Data; \
     return get_Function(casted_Container, index); \
 }
 
 #define Define_Container_Add(container_Type, add_Function) \
-static void Typed_Container_Add(TContainer* container, ssize_t index, TGeneric* value) \
+static void Typed_Container_Add(TIterator* it, ssize_t index, TGeneric* value) \
 { \
-    container_Type* casted_Container = (container_Type*)container; \
+    container_Type* casted_Container = (container_Type*)it->Container.Data; \
     add_Function(casted_Container, index, value); \
 }
 

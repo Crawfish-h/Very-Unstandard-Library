@@ -23,6 +23,15 @@ typedef struct TTree_Argument
     TGeneric* New_Value;
 } TTree_Argument;
 
+typedef struct TTree
+{
+    TContainer Super;
+    TTree_Node* First;
+    TTree_Node* Last;
+    TVector* Nodes;
+    TIterator It;
+} TTree;
+
 // TTree_Argument TTree_Arg(ssize_t parent_Index, ssize_t new_Node_Index, TGeneric* new_Value);
 
 #define TTree_Arg(parent_Index, new_Node_Index, type_Of_Value, the_Value) \

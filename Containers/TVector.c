@@ -5,13 +5,7 @@
 #include <string.h>
 #include "../Reflection.h"
 #include "TContainer.h"
-
-typedef struct TVector
-{
-    TContainer Super;
-    Array_Of(TGeneric) Elements; 
-    bool (*Sort)(TGeneric* value);
-} TVector;
+#include "TIterator.h"
 
 void* TVector_Container_Realloc(TContainer* container, size_t new_Capacity, TGeneric* arg)
 {
@@ -42,7 +36,8 @@ TVector* TVector_Init(size_t type_Count, size_t value_Count, ...)
     TVector* vector = calloc(1, sizeof(TVector));
     Err_Alloc(vector);
     TContainer* super = &vector->Super;
-    TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
+    TContainer_Init(super, value_Count * 2, type_Count, TC_Allocator_Basic());
+    TIterator_Init(&vector->It, TG(TVector*, vector), &vector->Super.Size, Typed_Container_Get_Info, Typed_Container_Add);
     vector->Elements = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
     
     va_list va_Args;

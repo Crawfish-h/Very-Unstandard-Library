@@ -3,13 +3,7 @@
 #include <stdlib.h>
 #include "TContainer.h"
 #include "../Reflection.h"
-
-typedef struct TLinked_List
-{
-    TContainer Super;
-    TNode* First;
-    TNode* Last;
-} TLinked_List;
+#include "TIterator.h"
 
 Define_Container_Get(TLinked_List, TLinked_List_Get_Info)
 Define_Container_Add(TLinked_List, TLinked_List_Add)
@@ -19,7 +13,8 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
     TLinked_List* list = calloc(1, sizeof(TLinked_List));
     Err_Alloc(list);
     TContainer* super = &list->Super;
-    TContainer_Init(super, value_Count * 2, type_Count, Typed_Container_Get, Typed_Container_Add, TC_Allocator_Basic());
+    TContainer_Init(super, value_Count * 2, type_Count, TC_Allocator_Basic());
+    TIterator_Init(&list->It, TG(TLinked_List*, list), &list->Super.Size, Typed_Container_Get_Info, Typed_Container_Add);
 
     va_list va_Args;
     value_Count += type_Count;

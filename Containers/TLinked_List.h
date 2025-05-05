@@ -10,7 +10,13 @@ typedef struct TNode
     TGeneric Value;
 } TNode;
 
-typedef struct TLinked_List TLinked_List;
+typedef struct TLinked_List
+{
+    TContainer Super;
+    TNode* First;
+    TNode* Last;
+    TIterator It;
+} TLinked_List;
 
 // all types need to come before the values.
 TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...);

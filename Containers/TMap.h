@@ -2,10 +2,15 @@
 #include "../TPair.h"
 #include <stddef.h>
 
-typedef struct TMap TMap;
 typedef struct TString TString;
 typedef struct TGeneric TGeneric;
 typedef struct TContainer TContainer;
+
+typedef struct TMap
+{
+    TContainer Super;
+    TIterator* It;
+} TMap;
 
 // types of all [...] arguments should be a TRtti. 
 TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ...);
@@ -22,7 +27,7 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...);
 
 void TMap_Remove(TMap* map, TString* key);
 
-void* TMap_Get(TMap* map, TString* key);
+void* TMap_Get(void* map_Arg, TString* key);
 TPair* TMap_Get_Info(TMap* map, TString* key);
 
 void TMap_Free(TMap* map);

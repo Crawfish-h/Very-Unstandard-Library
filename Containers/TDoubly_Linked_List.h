@@ -11,7 +11,13 @@ typedef struct TDoubly_Node
     TGeneric Value;
 } TDoubly_Node;
 
-typedef struct TDoubly_Linked_List TDoubly_Linked_List;
+typedef struct TDoubly_Linked_List
+{
+    TContainer Super;
+    TDoubly_Node* First;
+    TDoubly_Node* Last;
+    TIterator It;
+} TDoubly_Linked_List;
 
 // All types need to come before the values.
 TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Count, ...);

@@ -16,6 +16,8 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/TString.c
     ${PROJECT_SOURCE_DIR}/Containers/TC_Allocator.h
     ${PROJECT_SOURCE_DIR}/Containers/TC_Allocator.c
+    ${PROJECT_SOURCE_DIR}/Containers/TIterator.h
+    ${PROJECT_SOURCE_DIR}/Containers/TIterator.c
     ${PROJECT_SOURCE_DIR}/Containers/TContainer.h
     ${PROJECT_SOURCE_DIR}/Containers/TContainer.c
     ${PROJECT_SOURCE_DIR}/Containers/TArray.h

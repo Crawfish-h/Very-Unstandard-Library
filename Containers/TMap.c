@@ -9,60 +9,49 @@
 #include "../TPair.h"
 #include "TContainer.h"
 #include "TVector.h"
+#include "TIterator.h"
 
-typedef struct TMap
+void TMap_Define_Add(TIterator* it, ssize_t index, TGeneric* value)
 {
-    TContainer* Container;
-    void (*Add)(TContainer* container, ssize_t index, TGeneric* value);
-    TGeneric* (*Get)(TContainer* container, ssize_t index);
-} TMap;
-
-void TMap_Define_Add(void* map_Arg, ssize_t index, TGeneric* value)
-{
-    TMap* map = map_Arg;
     TString* key = TString_Dyn("index ");
 
     char index_Str[2];
     sprintf(index_Str, "%lld", index);
     TString_Insert0(key, index_Str, -1);
 
-    map->Container->Add
+    it->Add
     (
-        map->Container, index, 
+        it, index, 
         TG(TPair, &((TPair){ .First = *TG(TString*, key), .Second = *value }))
     );
 }
 
-TGeneric* TMap_Define_Get(void* map_Arg, ssize_t index)
+TGeneric* TMap_Define_Get_Info(TIterator* it, ssize_t index)
 {
-    TMap* map = map_Arg;
-    return map->Container->Get( map->Container, index);
+    return it->Get(it, index);
 }
 
-TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ...)
+TMap* TMap_Init(TIterator* it, size_t type_Count, size_t value_Count, ...)
 {
     TMap* map = calloc(1, sizeof(TMap));
+    Err_Alloc(map);
     va_list arg_List;
     value_Count += type_Count;
     va_start(arg_List, value_Count);
     value_Count -= type_Count;
-    map->Container = container;
-    map->Add = TMap_Define_Add;
-    map->Get = TMap_Define_Get;
+    map->It = it;
+    TIterator_Init(map->It, TG(TMap*, map), &map->Super.Size, TMap_Define_Get_Info, TMap_Define_Add);
+    TContainer_Init(&map->Super, value_Count * 2, type_Count, TC_Allocator_Basic());
     
     for (size_t i = 0; i < type_Count; i++)
     {
         TRtti rtti = va_arg(arg_List, TRtti);
-        TContainer_Add_Type(container, &rtti);
+        map->Super.Types[i] = va_arg(arg_List, TRtti);
     }
-
-    TRtti rtti = Rtti(TPair);
-    TContainer_Add_Type(container, &rtti);
 
     for (size_t i = 0; i < value_Count; i++)
     {
         TPair* pair = va_arg(arg_List, TPair*);
-        //TMap_Add(map, (TString*)pair->First.Data, &pair->Second);
         TMap_Multi(map, 1, pair);
     }
 
@@ -79,36 +68,36 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...)
 {
     va_list arg_List;
     va_start(arg_List, value_Count);
-    TContainer* cont = map->Container;
+    TContainer* super = &map->Super;
 
     for (size_t i = 0; i < value_Count; i++)
     {
         TPair* pair = va_arg(arg_List, TPair*);
-        for (size_t j = 0; j < map->Container->Size; j++)
+        for (size_t j = 0; j < super->Size; j++)
         {
-            TPair* pair_Cmp = map->Container->Get(map->Container, j)->Data;
+            TPair* pair_Cmp = map->It->Get(map->It, j);
             if (TString_Equal(pair_Cmp->First.Data, pair->First.Data) == true)
             {
                 fprintf(stderr, "ERROR tried adding a key that was already inside the TMap.");
             }
         }
 
-        Type_Check(&pair->Second.Rtti_.Type, cont->Types, cont->Type_Count);
+        Type_Check(&pair->Second.Rtti_.Type, super->Size, super->Type_Count);
         TString* key = pair->First.Data;
         char* temp_Key_Str = key->Str;
-        key->Str = cont->Allocator.Calloc(1, key->Super.Size + 1);
+        key->Str = super->Allocator.Calloc(1, key->Super.Size + 1);
         memcpy(key->Str, temp_Key_Str, key->Super.Size);
         TGeneric key_Gen = pair->First;
         TGeneric value_Gen = pair->Second;
-        TContainer_Add_If_Pointer(cont, &key_Gen, &pair->First);
-        TContainer_Add_If_Pointer(cont, &value_Gen, &pair->Second);
+        TContainer_Add_If_Pointer(super, &key_Gen, &pair->First);
+        TContainer_Add_If_Pointer(super, &value_Gen, &pair->Second);
         pair->First = key_Gen;
         pair->Second = value_Gen;
         key = pair->First.Data;
         //printf("value type: %s.\n", pair->Second.Rtti_.Type.Str);
         size_t index = 0;
-        if (cont->Size > 0) index = cont->Size - 1;
-        cont->Add(cont, index, TG(TPair, pair));
+        if (super->Size > 0) index = super->Size - 1;
+        map->It->Add(map->It, index, TG(TPair, pair));
     }
 
     va_end(arg_List);
@@ -116,9 +105,9 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...)
 
 TPair* TMap_Get_Info(TMap* map, TString* key)
 {
-    for (size_t i = 0; i < map->Container->Size; i++)
+    for (size_t i = 0; i < map->Super.Size; i++)
     {
-        TPair* pair = map->Container->Get(map->Container, i)->Data;
+        TPair* pair = map->It->Get(map->It, i);
         if (TString_Equal(pair->First.Data, key) == true)
         {
             return pair;
@@ -130,7 +119,7 @@ TPair* TMap_Get_Info(TMap* map, TString* key)
     return NULL;
 }
 
-void* TMap_Get(TMap* map, TString* key)
+void* TMap_Get(void* map_Arg, TString* key)
 {
-    return TMap_Get_Info(map, key)->Second.Data;
+    return TMap_Get_Info(map_Arg, key)->Second.Data;
 }

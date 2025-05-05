@@ -4,7 +4,13 @@
 #include "../TGeneric.h"
 #include "../TString.h"
 
-typedef struct TVector TVector;
+typedef struct TVector
+{
+    TContainer Super;
+    Array_Of(TGeneric) Elements; 
+    bool (*Sort)(TGeneric* value);
+    TIterator It;
+} TVector;
 
 // Initializes a [TVector]. Can only initialize [TVectors] with types, no values.
 // types of all [...] arguments should be a TRtti. 
