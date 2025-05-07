@@ -3,6 +3,7 @@
 #include "../Utility.h"
 #include "../TGeneric.h"
 #include "../TString.h"
+#include "TIterator.h"
 
 typedef struct TVector
 {

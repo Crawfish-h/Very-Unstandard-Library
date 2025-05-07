@@ -11,7 +11,7 @@ void TContainer_Init(TContainer* container, size_t capcity, size_t type_Count, T
 {
     container->Allocator = allocator;
     container->Size = 0;
-    container->Type_Count;
+    container->Type_Count = type_Count;
     container->Type_Capacity = type_Count * 2;
     container->Capacity = capcity;
     if (container->Type_Capacity == 0) container->Type_Capacity = 4;

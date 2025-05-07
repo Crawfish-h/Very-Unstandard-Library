@@ -5,6 +5,7 @@
 typedef struct TString TString;
 typedef struct TGeneric TGeneric;
 typedef struct TContainer TContainer;
+typedef struct TIterator TIterator;
 
 typedef struct TMap
 {
@@ -13,7 +14,7 @@ typedef struct TMap
 } TMap;
 
 // types of all [...] arguments should be a TRtti. 
-TMap* TMap_Init(TContainer* container, size_t type_Count, size_t value_Count, ...);
+TMap* TMap_Init(TIterator* it, size_t type_Count, size_t value_Count, ...);
 
 // Returns true if [key] does not exist inside [map->Pairs].
 // Does not add a key-value pair if the provided key already exists inside of the map.

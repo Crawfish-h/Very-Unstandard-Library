@@ -2,7 +2,7 @@
 
 void* TIterator_Get(TIterator* it, ssize_t index)
 {
-    return it->Get_Info(index)->Data;
+    return it->Get_Info(it, index)->Data;
 }
 
 void TIterator_Init

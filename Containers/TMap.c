@@ -82,7 +82,7 @@ bool TMap_Multi(TMap* map, size_t value_Count, ...)
             }
         }
 
-        Type_Check(&pair->Second.Rtti_.Type, super->Size, super->Type_Count);
+        Type_Check(&pair->Second.Rtti_.Type, super->Types, super->Type_Count);
         TString* key = pair->First.Data;
         char* temp_Key_Str = key->Str;
         key->Str = super->Allocator.Calloc(1, key->Super.Size + 1);

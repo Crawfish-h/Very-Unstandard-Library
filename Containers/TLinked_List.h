@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 #include "../TGeneric.h"
+#include "TIterator.h"
 
 typedef struct TNode TNode;
 

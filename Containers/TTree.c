@@ -5,7 +5,6 @@
 #include "TContainer.h"
 #include "../Reflection.h"
 #include "../TPair.h"
-#include "TIterator.h"
 
 TTree_Argument TTree_ArgumentF(ssize_t parent_Index, ssize_t new_Node_Index, TGeneric* new_Value)
 {
