@@ -47,7 +47,7 @@ TVector* TVector_Init(size_t type_Count, size_t value_Count, ...)
 
     for (size_t i = 0; i < type_Count; i++)
     {
-        super->Types[i] = va_arg(va_Args, TRtti);
+        super->Types[i] = *va_arg(va_Args, TRtti*);
     }
 
     for (size_t i = 0; i < value_Count; i++)
@@ -99,7 +99,7 @@ void TVector_Multi(TVector* vector, size_t value_Count, ...)
         if (super->Size == super->Capacity) TVector_Grow(vector, super->Capacity * 2);
         
         vector->Elements[super->Size - 1] = *pushed_Value;
-        if (Is_Pointer(pushed_Value->Rtti_) == false)
+        if (Is_Pointer(&pushed_Value->Rtti_) == false)
         {
             vector->Elements[super->Size - 1].Data = super->Allocator.Calloc(1, pushed_Value->Rtti_.Size_Of);
             vector->Elements[super->Size - 1].Is_Allocated = true;
@@ -136,7 +136,7 @@ void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value)
             }else
             {
                 temp_Array[i] = *value;
-                if (Is_Pointer(value->Rtti_) == false)
+                if (Is_Pointer(&value->Rtti_) == false)
                 {
                     temp_Array[index].Data = super->Allocator.Calloc(1, value->Rtti_.Size_Of);
                     temp_Array[index].Is_Allocated = true;

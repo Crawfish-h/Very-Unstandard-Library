@@ -29,7 +29,7 @@ TTree* TTree_Init(size_t type_Count, size_t value_Count, ...)
 
     for (size_t i = 0; i < type_Count; i++)
     {
-        super->Types[i] = va_arg(va_Args, TRtti);
+        super->Types[i] = *va_arg(va_Args, TRtti*);
     }
 
     for (size_t i = 0; i < value_Count - type_Count; i++)

@@ -54,6 +54,14 @@ typedef struct TGeneric TGeneric;
 
 void Err_Alloc(void* ptr);
 
+#define VUL_Assert(condition, message, ...) \
+    if (condition == false) \
+    { \
+        fprintf(stderr, "Assertion failed: %s, ", #condition); \
+        fprintf(stderr, message, __VA_ARGS__); \
+        abort(); \
+    }
+
 typedef struct TMaybe
 {
     void* Data;

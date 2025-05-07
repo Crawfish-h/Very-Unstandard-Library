@@ -1,16 +1,17 @@
 #pragma once
 #include "../TPair.h"
 #include <stddef.h>
+#include "TIterator.h"
 
 typedef struct TString TString;
 typedef struct TGeneric TGeneric;
 typedef struct TContainer TContainer;
-typedef struct TIterator TIterator;
 
 typedef struct TMap
 {
     TContainer Super;
-    TIterator* It;
+    TIterator* Other_It;
+    TIterator It;
 } TMap;
 
 // types of all [...] arguments should be a TRtti. 

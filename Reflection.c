@@ -37,9 +37,9 @@ bool Compare_Types(TRtti* type_Info_0, TRtti* type_Info_1)
     return TString_Equal(&type_Info_0->Type, &type_Info_1->Type) == true && type_Info_0->Size_Of == type_Info_1->Size_Of;
 }
 
-bool Is_Pointer(TRtti rtti)
+bool Is_Pointer(TRtti* rtti)
 {
-    if (TString_Str_Str(&rtti.Type, NT_TString("*")).Str != NULL)
+    if (TString_Str_Str(&rtti->Type, NT_TString("*")).Str != NULL)
     {
         return true;
     }

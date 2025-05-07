@@ -97,9 +97,10 @@ void* TContainer_Array_Alloc_Again(TContainer* container, size_t new_Capacity, T
 void TContainer_Add_If_Pointer(TContainer* container, TGeneric* value, TGeneric* new_Value)
 {
     *value = *new_Value;
-    if (Is_Pointer(new_Value->Rtti_) == false)
+    if (Is_Pointer(&new_Value->Rtti_) == false)
     {
         value->Data = container->Allocator.Calloc(1, new_Value->Rtti_.Size_Of);
+        Err_Alloc(value->Data);
         value->Is_Allocated = true;
         container->Allocator.Memmove(value->Data, new_Value->Data, new_Value->Rtti_.Size_Of);
     }

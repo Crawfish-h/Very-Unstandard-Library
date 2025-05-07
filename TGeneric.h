@@ -28,7 +28,9 @@ inline TGeneric TG2(TRtti* rtti, void* data, bool is_Allocated, TGeneric (*dtor)
 // [TGeneric.Data] points to [data]. 
 // Only valid with lvalues.
 #define TG(type, data) \
-    &(TGeneric){ .Data = data, .Rtti_ = Rtti(type) }
+    &(TGeneric){ .Data = data, .Rtti_ = *Rtti(type) }
+
+void TGeneric_Add_If_Pointer(TGeneric* value, TGeneric* new_Value);
 
 /*&(struct { TGeneric Generic_Field; }) \
 { \
