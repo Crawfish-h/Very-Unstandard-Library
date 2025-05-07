@@ -18,7 +18,7 @@ void TMap_Define_Add(TIterator* it, ssize_t index, TGeneric* value)
     sprintf(index_Str, "%lld", index);
     TString_Insert0(key, index_Str, -1);
 
-    TPair* pair = TG(TPair, &((TPair){ .First = *TG(TString*, key) }));
+    TPair* pair = &(TPair){ .First = *TG(TString*, key) };
     TGeneric_Add_If_Pointer(&pair->Second, value);
 
     ((TMap*)it->Container.Data)->Other_It->Add
@@ -26,11 +26,15 @@ void TMap_Define_Add(TIterator* it, ssize_t index, TGeneric* value)
         ((TMap*)it->Container.Data)->Other_It, 
         index, TG(TPair, pair)
     );
+
+    ((TMap*)it->Container.Data)->Super.Size++;
 }
 
 TGeneric* TMap_Define_Get_Info(TIterator* it, ssize_t index)
 {
-    return it->Get(it, index);
+    TIterator* other_It = ((TMap*)it->Container.Data)->Other_It;
+    void* value = other_It->Get(other_It, index);
+    return &((TPair*)value)->Second;
 }
 
 TMap* TMap_Init(TIterator* it, size_t type_Count, size_t value_Count, ...)
@@ -42,7 +46,7 @@ TMap* TMap_Init(TIterator* it, size_t type_Count, size_t value_Count, ...)
     va_start(arg_List, value_Count);
     value_Count -= type_Count;
     map->Other_It = it;
-    TIterator_Init(&map->It, TG(TMap*, map), &map->Super.Size, map->Other_It->Get_Info, TMap_Define_Add);
+    TIterator_Init(&map->It, TG(TMap*, map), &map->Super.Size, TMap_Define_Get_Info, TMap_Define_Add);
     TContainer_Init(&map->Super, value_Count * 2, type_Count, TC_Allocator_Basic());
     
     for (size_t i = 0; i < type_Count; i++)

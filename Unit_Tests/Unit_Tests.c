@@ -97,7 +97,7 @@ void Container_Test(TIterator* it, char* success_Message)
     }
 
     Test_Container(it);
-    assert(*it->Size == 6);
+    VUL_Assert(*it->Size == 6, "Actual size: %zu\n", *it->Size);
 
     printf("%s\n", success_Message);
 }
