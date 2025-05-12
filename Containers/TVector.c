@@ -7,7 +7,7 @@
 #include "TContainer.h"
 #include "TIterator.h"
 
-void* TVector_Container_Realloc(TContainer* container, size_t new_Capacity, TGeneric* arg)
+void* TVector_Container_Realloc(TContainer* container, uint32_t new_Capacity, TGeneric* arg)
 {
     TVector* vector = (TVector*)container;
     vector->Elements = vector->Super.Allocator.Realloc(vector->Elements, new_Capacity * sizeof(TGeneric));
@@ -19,7 +19,7 @@ TGeneric TVector_Index_Get(TContainer* container, TGeneric* index);
 inline TGeneric TVector_Index_Get(TContainer* container, TGeneric* index)
 {
     TVector* vector = (TVector*)container;
-    return (TGeneric){ .Data = &vector->Elements[*(size_t*)index->Data], .Rtti_ = Rtti(TGeneric) };
+    return (TGeneric){ .Data = &vector->Elements[*(uint32_t*)index->Data], .Rtti_ = Rtti(TGeneric) };
 }
 
 TGeneric TVector_Allocator_Free(TContainer* container)
@@ -31,7 +31,7 @@ TGeneric TVector_Allocator_Free(TContainer* container)
 Define_Container_Get(TVector, TVector_Get_Info)
 Define_Container_Add(TVector, TVector_Add_At)
 
-TVector* TVector_Init(size_t type_Count, size_t value_Count, ...)
+TVector* TVector_Init(uint32_t type_Count, uint32_t value_Count, ...)
 {
     TVector* vector = calloc(1, sizeof(TVector));
     Err_Alloc(vector);
@@ -45,12 +45,12 @@ TVector* TVector_Init(size_t type_Count, size_t value_Count, ...)
     va_start(va_Args, value_Count);
     value_Count -= type_Count;
 
-    for (size_t i = 0; i < type_Count; i++)
+    for (uint32_t i = 0; i < type_Count; i++)
     {
         super->Types[i] = *va_arg(va_Args, TRtti*);
     }
 
-    for (size_t i = 0; i < value_Count; i++)
+    for (uint32_t i = 0; i < value_Count; i++)
     {
         TVector_Push(vector, va_arg(va_Args, TGeneric*));
     }
@@ -59,7 +59,7 @@ TVector* TVector_Init(size_t type_Count, size_t value_Count, ...)
     return vector;
 }
 
-bool TVector_Grow(TVector* vector, size_t new_Capacity)
+bool TVector_Grow(TVector* vector, uint32_t new_Capacity)
 {
     TContainer* super = &vector->Super;
     super->Capacity = new_Capacity;
@@ -75,7 +75,7 @@ bool TVector_Grow(TVector* vector, size_t new_Capacity)
         exit(EXIT_FAILURE);
     }
 
-    for (size_t i = super->Size; i < super->Capacity; i++)
+    for (uint32_t i = super->Size; i < super->Capacity; i++)
     {
         vector->Elements[i] = (TGeneric){ NULL };
     }
@@ -85,13 +85,13 @@ bool TVector_Grow(TVector* vector, size_t new_Capacity)
     return false;
 }
 
-void TVector_Multi(TVector* vector, size_t value_Count, ...)
+void TVector_Multi(TVector* vector, uint32_t value_Count, ...)
 {
     va_list va_Args;
     va_start(va_Args, value_Count);
     TContainer* super = &vector->Super;
     
-    for (size_t i = 0; i < value_Count; i++)
+    for (uint32_t i = 0; i < value_Count; i++)
     {
         super->Size++;
         TGeneric* pushed_Value = va_arg(va_Args, TGeneric*);
@@ -115,7 +115,7 @@ void TVector_Push(TVector* vector, TGeneric* value)
     TVector_Multi(vector, 1, value);
 }
 
-void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value)
+void TVector_Add_At(TVector* vector, int64_t index, TGeneric* value)
 {
     TContainer* super = &vector->Super;
 
@@ -125,9 +125,9 @@ void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value)
         super->Size++;
         if (super->Size == super->Capacity) TVector_Grow(vector, super->Capacity * 2);
         Array_Of(TGeneric) temp_Array = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
-        size_t j = 0;
+        uint32_t j = 0;
         
-        for (size_t i = 0; i < super->Size; i++)
+        for (uint32_t i = 0; i < super->Size; i++)
         {
             if (i != index)
             {
@@ -160,7 +160,7 @@ void TVector_Add_At(TVector* vector, ssize_t index, TGeneric* value)
 void TVector_Clear(TVector* vector)
 {
     TContainer* super = &vector->Super;
-    for (size_t i = 0; i < super->Size; i++)
+    for (uint32_t i = 0; i < super->Size; i++)
     {
        TContainer_Remove_TGeneric_Element(&vector->Elements[i]);
     }
@@ -175,7 +175,7 @@ void TVector_Free(TVector* vector)
     free(vector);
 }
 
-void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Allocated)
+void TVector_Remove_At_Internal(TVector* vector, int64_t index, bool free_Allocated)
 {
     TContainer* super = &vector->Super;
     if (index > super->Size - 1)
@@ -184,7 +184,7 @@ void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Alloca
         exit(EXIT_FAILURE);
     }
 
-    size_t initial_Index = 0;
+    uint32_t initial_Index = 0;
     if (index < 0)
     {
         initial_Index = super->Size - index;
@@ -194,8 +194,8 @@ void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Alloca
     {
         Array_Of(TGeneric) temp_Array = super->Allocator.Calloc(super->Capacity, sizeof(TGeneric));
 
-        size_t j = 0;
-        for (size_t i = 0; i < super->Size; i++)
+        uint32_t j = 0;
+        for (uint32_t i = 0; i < super->Size; i++)
         {
             if (i != index)
             {
@@ -228,12 +228,12 @@ void TVector_Remove_At_Internal(TVector* vector, ssize_t index, bool free_Alloca
     }
 }
 
-void TVector_Remove_At(TVector* vector, ssize_t index)
+void TVector_Remove_At(TVector* vector, int64_t index)
 {
     TVector_Remove_At_Internal(vector, index, false);
 }
 
-void TVector_Remove_At1(TVector* vector, ssize_t index)
+void TVector_Remove_At1(TVector* vector, int64_t index)
 {
     TVector_Remove_At_Internal(vector, index, true);
 }
@@ -241,7 +241,7 @@ void TVector_Remove_At1(TVector* vector, ssize_t index)
 void TVector_Pop(TVector* vector)
 {
     TContainer* super = &vector->Super;
-    TContainer_Remove_TGeneric_Element(&vector->Elements[super->Size - 1]);
+    TGeneric_Free(&vector->Elements[super->Size - 1]);
     super->Size--;
 }
 
@@ -254,12 +254,13 @@ TGeneric TVector_Pop1(TVector* vector)
     return return_Gen;
 }
 
-TGeneric* TVector_Get_Info(TVector* vector, size_t index)
+TGeneric* TVector_Get_Info(TVector* vector, int64_t index)
 {
     return &vector->Elements[index];
 }
 
-void* TVector_Get(TVector* vector, size_t index)
+void* TVector_Get(TVector* vector, int64_t index)
 {
+    Index_Check(&index, vector->Super.Size);
     return vector->Elements[index].Data;
 }

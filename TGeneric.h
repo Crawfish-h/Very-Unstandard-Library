@@ -43,6 +43,6 @@ void TGeneric_Add_If_Pointer(TGeneric* value, TGeneric* new_Value);
 
     /* &(TGeneric){ .Data = &(typeof(data)[]){ data }, .Rtti_ = Rtti(data) } */
 
-TGeneric TGeneric_Init(void* data, TRtti rtti, TObject* super);
-void TGeneric_Ctor();
+// returns [true] if [element] was removed.
+bool TGeneric_Free(TGeneric* element);
 

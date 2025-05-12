@@ -4,16 +4,16 @@
 #include <string.h>
 #include "TString.h"
 
-TRtti TRtti_Init_(void* check, size_t size_Of_Type, TString* type_String)
+TRtti TRtti_Init_(void* check, uint32_t size_Of_Type, TString* type_String)
 {
     return (TRtti){ .Type = *type_String, .Size_Of = size_Of_Type };
 }
 
-void Type_Check(TString* type_String, Array_Of(TRtti) types, size_t types_Count)
+void Type_Check(TString* type_String, Array_Of(TRtti) types, uint32_t types_Count)
 {
     if (types_Count > 0)
     {
-        for (size_t i = 0; i < types_Count; i++)
+        for (uint32_t i = 0; i < types_Count; i++)
         {
             // WIP: change this to a TString based function.
             if (strcmp(type_String->Str, types[i].Type.Str) == 0)
@@ -27,7 +27,7 @@ void Type_Check(TString* type_String, Array_Of(TRtti) types, size_t types_Count)
     }
 
     fprintf(stderr, "ERROR: type mismatch. Invalid added type: %s. Valid types: %s", type_String->Str, types[0].Type.Str);
-    for (size_t i = 1; i < types_Count; i++) fprintf(stderr, ", %s", types[i].Type.Str);
+    for (uint32_t i = 1; i < types_Count; i++) fprintf(stderr, ", %s", types[i].Type.Str);
     fprintf(stderr, ".\n");
     exit(EXIT_FAILURE);
 }

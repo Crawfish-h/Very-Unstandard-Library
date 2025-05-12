@@ -16,10 +16,10 @@ TString* TString_Dyn(char* string)
     return tstring;
 }
 
-void TString_Insert0(TString* string, char* other_String, ssize_t index)
+void TString_Insert0(TString* string, char* other_String, int64_t index)
 {
     TContainer* super = &string->Super;
-    size_t other_Length = strlen(other_String);
+    uint32_t other_Length = strlen(other_String);
     if (index < 0)
     {
         index = super->Size + ++index;
@@ -43,8 +43,8 @@ void TString_Insert0(TString* string, char* other_String, ssize_t index)
     memcpy(string->Str, temp_String, index);
     memcpy(string->Str + index, other_String, other_Length);
 
-    size_t j = index;
-    for (size_t i = index + other_Length; i < other_Length + super->Size; i++)
+    uint32_t j = index;
+    for (uint32_t i = index + other_Length; i < other_Length + super->Size; i++)
     {
         string->Str[i] = temp_String[j];
         j++;
@@ -55,7 +55,7 @@ void TString_Insert0(TString* string, char* other_String, ssize_t index)
     free(temp_String);
 }
 
-void TString_Insert1(TString* string, TString* other_String, ssize_t index)
+void TString_Insert1(TString* string, TString* other_String, int64_t index)
 {
     TContainer* super = &string->Super;
     if (index < 0)
@@ -80,8 +80,8 @@ void TString_Insert1(TString* string, TString* other_String, ssize_t index)
     memcpy(string->Str, temp_String, index);
     memcpy(string->Str + index, other_String->Str, other_String->Super.Size);
 
-    size_t j = index;
-    for (size_t i = index + other_String->Super.Size; i < other_String->Super.Size + super->Size; i++)
+    uint32_t j = index;
+    for (uint32_t i = index + other_String->Super.Size; i < other_String->Super.Size + super->Size; i++)
     {
         string->Str[i] = temp_String[j];
         j++;
@@ -102,7 +102,7 @@ bool TString_Equal(TString* str_0, TString* str_1)
 {
     if (str_0->Super.Size != str_1->Super.Size) return false;
     
-    for (size_t i = 0; i < str_0->Super.Size; i++)
+    for (uint32_t i = 0; i < str_0->Super.Size; i++)
     {
         if (str_0->Str[i] != str_1->Str[i]) return false;
     }
@@ -110,9 +110,9 @@ bool TString_Equal(TString* str_0, TString* str_1)
     return true;
 }
 
-bool TString_Equal_N(TString* str_0, TString* str_1, size_t n)
+bool TString_Equal_N(TString* str_0, TString* str_1, uint32_t n)
 {    
-    for (size_t i = 0; i < n; i++)
+    for (uint32_t i = 0; i < n; i++)
     {
         if (str_0->Str[i] != str_1->Str[i]) return false;
     }

@@ -12,15 +12,15 @@ typedef struct TTree_Node
 {
     TTree_Node* Parent;
     TVector* Children; // [TVector] of [TTree_Node*].
-    size_t Depth;
-    ssize_t Index; // [TTree_Node.Index] is equal to the index of this node inside of [Prev.Children]. < This is WRONG.
+    uint32_t Depth;
+    int64_t Index; // [TTree_Node.Index] is equal to the index of this node inside of [Prev.Children]. < This is WRONG.
     TGeneric Value;
 } TTree_Node;
 
 typedef struct TTree_Argument
 {
-    ssize_t Parent_Index;
-    ssize_t New_Node_Index;
+    int64_t Parent_Index;
+    int64_t New_Node_Index;
     TGeneric* New_Value;
 } TTree_Argument;
 
@@ -33,7 +33,7 @@ typedef struct TTree
     TIterator It;
 } TTree;
 
-// TTree_Argument TTree_Arg(ssize_t parent_Index, ssize_t new_Node_Index, TGeneric* new_Value);
+// TTree_Argument TTree_Arg(int64_t parent_Index, int64_t new_Node_Index, TGeneric* new_Value);
 
 #define TTree_Arg(parent_Index, new_Node_Index, type_Of_Value, the_Value) \
     &(TTree_Argument) \
@@ -44,26 +44,26 @@ typedef struct TTree
     }
 
 // All types need to come before the values.
-TTree* TTree_Init(size_t type_Count, size_t value_Count, ...);
+TTree* TTree_Init(uint32_t type_Count, uint32_t value_Count, ...);
 
 // Adds multiple nodes that hold the supplied values as children of the node at [index] and returns true if the new value was allocated.
-void TTree_Multi(TTree* tree, size_t value_Count, ...);
+void TTree_Multi(TTree* tree, uint32_t value_Count, ...);
 
 void TTree_Add(TTree* tree, TTree_Argument* new_Value);
 
-void TTree_Add_Define(TTree* tree, ssize_t index, TGeneric* tree_Arg);
+void TTree_Add_Define(TTree* tree, int64_t index, TGeneric* tree_Arg);
 
 // Returns the data at [index] using depth first search.
-void* TTree_Get(TTree* tree, ssize_t index);
+void* TTree_Get(TTree* tree, int64_t index);
 
 // Returns the type information along with the data at [index].
-TGeneric* TTree_Get_Info(TTree* tree, ssize_t index);
+TGeneric* TTree_Get_Info(TTree* tree, int64_t index);
 
 // Returns the data at [index] using a [TVector].
-void* TTree_Vector_Get(TTree* tree, ssize_t index);
+void* TTree_Vector_Get(TTree* tree, int64_t index);
 
-TGeneric* TTree_Vector_Get_Info(TTree* tree, ssize_t index);
+TGeneric* TTree_Vector_Get_Info(TTree* tree, int64_t index);
 
-void Tree_Remove(TTree* tree, ssize_t index);
+void Tree_Remove(TTree* tree, int64_t index);
 
 void TTree_Free(TTree* tree);

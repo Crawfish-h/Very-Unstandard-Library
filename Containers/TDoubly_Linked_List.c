@@ -8,7 +8,7 @@
 Define_Container_Get(TDoubly_Linked_List, TDoubly_Linked_List_Get_Info)
 Define_Container_Add(TDoubly_Linked_List, TDoubly_Linked_List_Add)
 
-TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Count, ...)
+TDoubly_Linked_List* TDoubly_Linked_List_Init(uint32_t type_Count, uint32_t value_Count, ...)
 {
     TDoubly_Linked_List* list = calloc(1, sizeof(TDoubly_Linked_List));
     Err_Alloc(list);
@@ -20,7 +20,7 @@ TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Co
     value_Count += type_Count;
     va_start(va_Args, value_Count);
 
-    for (size_t i = 0; i < type_Count; i++)
+    for (uint32_t i = 0; i < type_Count; i++)
     {
         super->Types[i] = *va_arg(va_Args, TRtti*);
     }
@@ -33,7 +33,7 @@ TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Co
         TDoubly_Linked_List_Add(list, 0, va_arg(va_Args, TGeneric*));
     }
 
-    for (size_t i = type_Count + 1; i < value_Count; i++)
+    for (uint32_t i = type_Count + 1; i < value_Count; i++)
     {
         TDoubly_Linked_List_Multi(list, -1, 1, va_arg(va_Args, TGeneric*));
     }
@@ -42,7 +42,7 @@ TDoubly_Linked_List* TDoubly_Linked_List_Init(size_t type_Count, size_t value_Co
     return list;
 }
 
-TDoubly_Node* TDoubly_Linked_List_Get_Node(TDoubly_Linked_List* list, ssize_t index)
+TDoubly_Node* TDoubly_Linked_List_Get_Node(TDoubly_Linked_List* list, int64_t index)
 {
     TDoubly_Node* current_node = NULL;
     TContainer* super = &list->Super;
@@ -50,7 +50,7 @@ TDoubly_Node* TDoubly_Linked_List_Get_Node(TDoubly_Linked_List* list, ssize_t in
     if (index < super->Size / 2)
     {
         current_node = list->First;
-        for (size_t i = 0; i < index; i++)
+        for (uint32_t i = 0; i < index; i++)
         {
             if (current_node == NULL)
             {
@@ -63,7 +63,7 @@ TDoubly_Node* TDoubly_Linked_List_Get_Node(TDoubly_Linked_List* list, ssize_t in
     }else
     {
         current_node = list->Last;
-        for (size_t i = super->Size - 1; i > index; i--)
+        for (uint32_t i = super->Size - 1; i > index; i--)
         {
             if (current_node == NULL)
             {
@@ -78,12 +78,12 @@ TDoubly_Node* TDoubly_Linked_List_Get_Node(TDoubly_Linked_List* list, ssize_t in
     return current_node;
 }
 
-bool TDoubly_Linked_List_Add(TDoubly_Linked_List* list, ssize_t index, TGeneric* node_Value)
+bool TDoubly_Linked_List_Add(TDoubly_Linked_List* list, int64_t index, TGeneric* node_Value)
 {
     TDoubly_Linked_List_Multi(list, index, 1, node_Value);
 }
 
-bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, ssize_t index, size_t value_Count, ...)
+bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, int64_t index, uint32_t value_Count, ...)
 {
     va_list va_Args;
     va_start(va_Args, value_Count);
@@ -95,7 +95,7 @@ bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, ssize_t index, size_t 
         index = super->Size + 1 + index;
     }
 
-    size_t node_Count = 0;
+    uint32_t node_Count = 0;
     if (super->Size == 0)
     {
         TDoubly_Node* first_Node = super->Allocator.Calloc(1, sizeof(TDoubly_Node));
@@ -112,7 +112,7 @@ bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, ssize_t index, size_t 
         TDoubly_Node* new_Node = super->Allocator.Calloc(1, sizeof(TDoubly_Node));
         TContainer_Add_If_Pointer(super, &new_Node->Value, va_arg(va_Args, TGeneric*));
         Type_Check(&new_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
-        ssize_t node_Index = index + node_Count;
+        int64_t node_Index = index + node_Count;
 
         TDoubly_Node* indexed_Node = NULL;
         if (node_Index == super->Size)
@@ -145,23 +145,23 @@ bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, ssize_t index, size_t 
     return did_Allocate;
 }
 
-void* TDoubly_Linked_List_Get(TDoubly_Linked_List* list, ssize_t index)
+void* TDoubly_Linked_List_Get(TDoubly_Linked_List* list, int64_t index)
 {
     return TDoubly_Linked_List_Get_Node(list, index)->Value.Data;
 }
 
-TGeneric* TDoubly_Linked_List_Get_Info(TDoubly_Linked_List* list, ssize_t index)
+TGeneric* TDoubly_Linked_List_Get_Info(TDoubly_Linked_List* list, int64_t index)
 {
     return &TDoubly_Linked_List_Get_Node(list, index)->Value;
 }
 
 void TDoubly_Linked_List_Free(TDoubly_Linked_List* list)
 {
-    for (size_t i = list->Super.Size - 1; i > -1; i--)
+    for (uint32_t i = list->Super.Size - 1; i > -1; i--)
     {
         TDoubly_Node* node = TDoubly_Linked_List_Get_Node(list, i);
         //if (node->Value.Dtor != NULL) node->Value.Dtor(NULL);
-        TContainer_Remove_TGeneric_Element(&node->Value);
+        TGeneric_Free(&node->Value);
         free(node);
     }
 

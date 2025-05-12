@@ -14,3 +14,21 @@ void TGeneric_Add_If_Pointer(TGeneric* value, TGeneric* new_Value)
         memmove(value->Data, new_Value->Data, new_Value->Rtti_.Size_Of);
     }
 }
+
+bool TGeneric_Free(TGeneric* element)
+{
+    if (element->Dtor == NULL)
+    {
+        if (element->Is_Allocated == true)
+        {
+            free(element->Data);
+            return true;
+        }
+    } else
+    {
+        element->Dtor(element);
+        return true;
+    }
+
+    return false;
+}

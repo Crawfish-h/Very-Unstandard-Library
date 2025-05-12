@@ -12,10 +12,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-void Container_Type_Test(Array_Of(TRtti*) expected_Types, TRtti* actual_Type, size_t count)
+void Container_Type_Test(Array_Of(TRtti*) expected_Types, TRtti* actual_Type, uint32_t count)
 {
     bool found_Type = false;
-    for (size_t i = 0; i < count; i++)
+    for (uint32_t i = 0; i < count; i++)
     {
         if (Compare_Types(expected_Types[i], actual_Type) == true)
         {
@@ -28,7 +28,7 @@ void Container_Type_Test(Array_Of(TRtti*) expected_Types, TRtti* actual_Type, si
 
 void Test_Container(TIterator* it)
 {
-    for (size_t i = 0; i < *it->Size; i++)
+    for (uint32_t i = 0; i < *it->Size; i++)
     {
         TGeneric* tg = it->Get_Info(it, i);
         if (Compare_Types(&tg->Rtti_, Rtti(char*)))
@@ -78,7 +78,7 @@ void Container_Test(TIterator* it, char* success_Message)
     it->Add(it, 4, TG(TRtti, Rtti(int)));
     it->Add(it, 3, TG(TVector*, TVector_Init(1, 1, Rtti(TString), TG(TString, NT_TString("TString inside a TVector")))));
 
-    for (size_t i = 0; i < 6; i++)
+    for (uint32_t i = 0; i < 6; i++)
     {
         Container_Type_Test
         (

@@ -8,7 +8,7 @@
 Define_Container_Get(TLinked_List, TLinked_List_Get_Info)
 Define_Container_Add(TLinked_List, TLinked_List_Add)
 
-TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
+TLinked_List* TLinked_List_Init(uint32_t type_Count, uint32_t value_Count, ...)
 {
     TLinked_List* list = calloc(1, sizeof(TLinked_List));
     Err_Alloc(list);
@@ -20,7 +20,7 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
     value_Count += type_Count;
     va_start(va_Args, value_Count);
 
-    for (size_t i = 0; i < type_Count; i++)
+    for (uint32_t i = 0; i < type_Count; i++)
     {
         super->Types[i] = *va_arg(va_Args, TRtti*);
     }
@@ -33,7 +33,7 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
         TLinked_List_Add(list, 0, va_arg(va_Args, TGeneric*));
     }
 
-    for (size_t i = type_Count + 1; i < value_Count; i++)
+    for (uint32_t i = type_Count + 1; i < value_Count; i++)
     {
         TLinked_List_Multi(list, -1, 1, va_arg(va_Args, TGeneric*));
     }
@@ -42,12 +42,12 @@ TLinked_List* TLinked_List_Init(size_t type_Count, size_t value_Count, ...)
     return list;
 }
 
-TNode* TLinked_List_Get_Node(TLinked_List* list, ssize_t index)
+TNode* TLinked_List_Get_Node(TLinked_List* list, int64_t index)
 {
     TNode* current_node = list->First;
     TContainer* super = &list->Super;
 
-    for (size_t i = 0; i < index; i++)
+    for (uint32_t i = 0; i < index; i++)
     {
         if (current_node == NULL)
         {
@@ -61,12 +61,12 @@ TNode* TLinked_List_Get_Node(TLinked_List* list, ssize_t index)
     return current_node;
 }
 
-bool TLinked_List_Add(TLinked_List* list, ssize_t index, TGeneric* node_Value)
+bool TLinked_List_Add(TLinked_List* list, int64_t index, TGeneric* node_Value)
 {
     TLinked_List_Multi(list, index, 1, node_Value);
 }
 
-bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, ...)
+bool TLinked_List_Multi(TLinked_List* list, int64_t index, uint32_t value_Count, ...)
 {
     va_list va_Args;
     va_start(va_Args, value_Count);
@@ -78,7 +78,7 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
         index = super->Size + 1 + index;
     }
 
-    size_t node_Count = 0;
+    uint32_t node_Count = 0;
     if (super->Size == 0)
     {
         TNode* first_Node = super->Allocator.Calloc(1, sizeof(TNode));
@@ -95,7 +95,7 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
         TNode* new_Node = super->Allocator.Calloc(1, sizeof(TNode));
         TContainer_Add_If_Pointer(super, &new_Node->Value, va_arg(va_Args, TGeneric*));
         Type_Check(&new_Node->Value.Rtti_.Type, super->Types, super->Type_Count);
-        ssize_t node_Index = index + node_Count;
+        int64_t node_Index = index + node_Count;
 
         TNode* indexed_Node = NULL;
         if (node_Index == super->Size)
@@ -124,17 +124,17 @@ bool TLinked_List_Multi(TLinked_List* list, ssize_t index, size_t value_Count, .
     return did_Allocate;
 }
 
-void* TLinked_List_Get(TLinked_List* list, ssize_t index)
+void* TLinked_List_Get(TLinked_List* list, int64_t index)
 {
     return TLinked_List_Get_Node(list, index)->Value.Data;
 }
 
-TGeneric* TLinked_List_Get_Info(TLinked_List* list, ssize_t index)
+TGeneric* TLinked_List_Get_Info(TLinked_List* list, int64_t index)
 {
     return &TLinked_List_Get_Node(list, index)->Value;
 }
 
-void TLinked_List_Set(TLinked_List* list, ssize_t index, TGeneric* new_Value)
+void TLinked_List_Set(TLinked_List* list, int64_t index, TGeneric* new_Value)
 {   
     TGeneric* value = &TLinked_List_Get_Node(list, index)->Value;
 
@@ -154,11 +154,11 @@ void TLinked_List_Set(TLinked_List* list, ssize_t index, TGeneric* new_Value)
 
 void TLinked_List_Free(TLinked_List* list)
 {
-    for (size_t i = list->Super.Size - 1; i > -1; i--)
+    for (uint32_t i = list->Super.Size - 1; i > -1; i--)
     {
         TNode* node = TLinked_List_Get_Node(list, i);
         //if (node->Value.Dtor != NULL) node->Value.Dtor(NULL);
-        TContainer_Remove_TGeneric_Element(&node->Value);
+        TGeneric_Free(&node->Value);
         free(node);
     }
 

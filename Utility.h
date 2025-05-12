@@ -1,6 +1,7 @@
 #pragma once
 #include <stddef.h>
 #include <stdio.h>
+#include <stdint.h>
 
 typedef struct TString TString;
 typedef TString Type_Name;
@@ -82,3 +83,4 @@ typedef struct TMaybe
 // Converts an r value to a l value's address.
 #define LV(r_Value) (typeof(r_Value)[]){ r_Value }
 
+void Index_Check(int64_t* index, uint32_t max_Index_Val);

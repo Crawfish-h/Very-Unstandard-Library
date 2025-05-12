@@ -7,7 +7,7 @@
 #include "../TGeneric.h"
 #include "TIterator.h"
 
-void TContainer_Init(TContainer* container, size_t capcity, size_t type_Count, TC_Allocator allocator)
+void TContainer_Init(TContainer* container, uint32_t capcity, uint32_t type_Count, TC_Allocator allocator)
 {
     container->Allocator = allocator;
     container->Size = 0;
@@ -20,7 +20,7 @@ void TContainer_Init(TContainer* container, size_t capcity, size_t type_Count, T
     Err_Alloc(container->Types);
 }
 
-size_t TContainer_Grow(TContainer* container, size_t new_Capacity, TGeneric* arg)
+uint32_t TContainer_Grow(TContainer* container, uint32_t new_Capacity, TGeneric* arg)
 { 
     /*
     if (new_Capacity < container->Size)
@@ -66,29 +66,29 @@ size_t TContainer_Grow(TContainer* container, size_t new_Capacity, TGeneric* arg
     */
 }
 
-size_t TContainer_Size(TContainer* container)
+uint32_t TContainer_Size(TContainer* container)
 {
     return container->Size;
 }
 
-size_t TContainer_Capacity(TContainer* container)
+uint32_t TContainer_Capacity(TContainer* container)
 {
     return container->Capacity;
 }
 
-size_t TContainer_Type_Count(TContainer* container)
+uint32_t TContainer_Type_Count(TContainer* container)
 {
     return container->Type_Count;
 }
 
-size_t TContainer_Type_Capacity(TContainer* container)
+uint32_t TContainer_Type_Capacity(TContainer* container)
 {
     return container->Type_Capacity;
 }
 
-void* TContainer_Array_Alloc_Again(TContainer* container, size_t new_Capacity, TGeneric* arg)
+void* TContainer_Array_Alloc_Again(TContainer* container, uint32_t new_Capacity, TGeneric* arg)
 {
-    void* container_Elements = container->Allocator.Calloc(new_Capacity, (size_t)arg->Data);
+    void* container_Elements = container->Allocator.Calloc(new_Capacity, (uint32_t)arg->Data);
     memcpy(container_Elements, *container->Data_Ptr, container->Capacity - 1);
     free(*container->Data_Ptr);
     *container->Data_Ptr = container_Elements;
@@ -106,27 +106,9 @@ void TContainer_Add_If_Pointer(TContainer* container, TGeneric* value, TGeneric*
     }
 }
 
-bool TContainer_Remove_TGeneric_Element(TGeneric* element)
-{
-    if (element->Dtor == NULL)
-    {
-        if (element->Is_Allocated == true)
-        {
-            free(element->Data);
-            return true;
-        }
-    } else
-    {
-        element->Dtor(element);
-        return true;
-    }
-
-    return false;
-}
-
 bool TContainer_Add_Type(TContainer* container, TRtti* new_Type)
 {
-    for (size_t i; i < container->Type_Count; i++)
+    for (uint32_t i; i < container->Type_Count; i++)
     {
         if (Compare_Types(&container->Types[i], new_Type) == true)
         {
@@ -159,9 +141,9 @@ bool TContainer_Remove_Type(TContainer* container, TRtti* type)
 {
     TRtti temp_Array[container->Type_Capacity];
     container->Allocator.Memcpy(temp_Array, container->Types, container->Type_Capacity);
-    size_t j = 0;
+    uint32_t j = 0;
     bool type_Found = false;
-    for (size_t i = 0; i < container->Type_Count; i++)
+    for (uint32_t i = 0; i < container->Type_Count; i++)
     {
         if (Compare_Types(&container->Types[i], type) == true) 
         {
