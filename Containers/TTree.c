@@ -216,5 +216,6 @@ void TTree_Free(TTree* tree)
     }
 
     TVector_Free(tree->Nodes);
+    free(tree->Super.Types);
     free(tree);
 }

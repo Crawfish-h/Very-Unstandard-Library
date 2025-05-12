@@ -165,5 +165,6 @@ void TDoubly_Linked_List_Free(TDoubly_Linked_List* list)
         free(node);
     }
 
+    free(list->Super.Types);
     free(list);
 }

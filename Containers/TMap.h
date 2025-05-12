@@ -27,7 +27,8 @@ bool TMap_Add(TMap* map, TPair* key_Value_Pair);
 // Copies an added value if it is not a pointer type.
 bool TMap_Multi(TMap* map, uint32_t value_Count, ...);
 
-void TMap_Remove(TMap* map, TString* key);
-
 void* TMap_Get(void* map_Arg, TString* key);
 TPair* TMap_Get_Info(TMap* map, TString* key);
+
+void TMap_Remove(TMap* map, TString* key);
+void TMap_Free(TMap* map);

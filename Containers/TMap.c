@@ -20,6 +20,7 @@ void TMap_Define_Add(TIterator* it, int64_t index, TGeneric* value)
 
     TPair* pair = &(TPair){ .First = *TG(TString*, key) };
     TGeneric_Add_If_Pointer(&pair->Second, value);
+    pair->First.Is_Allocated = true;
 
     ((TMap*)it->Container.Data)->Other_It->Add
     (
@@ -69,6 +70,14 @@ bool TMap_Add(TMap* map, TPair* key_Value_Pair)
     TMap_Multi(map, 1, key_Value_Pair);
 }
 
+TGeneric TMap_Element_Dtor(TGeneric* pair_Arg)
+{
+    TPair* pair = pair_Arg->Data;
+    if (pair->First.Is_Allocated == true) TString_Free((TString*)pair->First.Data);
+    TGeneric_Free(&pair->Second);
+    TGeneric_Free(pair_Arg);
+}
+
 bool TMap_Multi(TMap* map, uint32_t value_Count, ...)
 {
     va_list arg_List;
@@ -83,7 +92,7 @@ bool TMap_Multi(TMap* map, uint32_t value_Count, ...)
             TPair* pair_Cmp = map->Other_It->Get(map->Other_It, j);
             if (TString_Equal(pair_Cmp->First.Data, pair->First.Data) == true)
             {
-                fprintf(stderr, "ERROR tried adding a key that was already inside the TMap.");
+                fprintf(stderr, "ERROR: in function [TMap_Multi(...)], tried adding a key that was already inside the TMap.");
             }
         }
 
@@ -103,6 +112,7 @@ bool TMap_Multi(TMap* map, uint32_t value_Count, ...)
         uint32_t index = 0;
         if (super->Size > 0) index = super->Size - 1;
         map->Other_It->Add(map->Other_It, index, TG(TPair, pair));
+        map->Other_It->Get_Info(map->Other_It, index)->Dtor = TMap_Element_Dtor;
         super->Size++;
     }
 
@@ -120,7 +130,7 @@ TPair* TMap_Get_Info(TMap* map, TString* key)
         }
     }
 
-    fprintf(stderr, "ERROR: could not find key '%s' in [TMap].\n", key->Str);
+    fprintf(stderr, "ERROR: in function [TMap_Get_Info(...)], could not find key '%s' in [TMap].\n", key->Str);
     exit(EXIT_FAILURE);
     return NULL;
 }
@@ -128,4 +138,27 @@ TPair* TMap_Get_Info(TMap* map, TString* key)
 void* TMap_Get(void* map_Arg, TString* key)
 {
     return TMap_Get_Info(map_Arg, key)->Second.Data;
+}
+
+void TMap_Remove(TMap* map, TString* key)
+{
+    for (uint32_t i = 0; i < *map->It.Size; i++)
+    {
+        TPair* pair = map->Other_It->Get(map->Other_It, i);
+        if (TString_Equal(pair->First.Data, key) == true)
+        {
+            TIterator_Remove(map->Other_It, i);
+            *map->It.Size--;
+            return;
+        }
+    }
+
+    fprintf(stderr, "ERROR: in function [TMap_Remove(...)], could not find key '%s' in [TMap].\n", key->Str);
+    exit(EXIT_FAILURE);
+}
+
+void TMap_Free(TMap* map)
+{
+    free(map->Super.Types);
+    free(map);
 }

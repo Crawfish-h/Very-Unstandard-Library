@@ -105,6 +105,9 @@ void Container_Test(TIterator* it, char* success_Message)
 
     Test_Container(it);
     VUL_Assert(*it->Size == 6, "Actual size: %zu\n", *it->Size);
+
+
+
     bool container_Was_Freed = false;
     TRtti* container_Rtti = &it->Container.Rtti_;
     void* container_Data = it->Container.Data;
@@ -119,6 +122,11 @@ void Container_Test(TIterator* it, char* success_Message)
     Test_Container_Free(TLinked_List*, TLinked_List_Free);
     Test_Container_Free(TDoubly_Linked_List*, TDoubly_Linked_List_Free);
     Test_Container_Free(TTree*, TTree_Free);
+
+    if (Compare_Types(&it->Container.Rtti_, Rtti(TMap*)))
+    {
+        TMap_Free((TMap*)it->Container.Data);
+    }
 
     assert(container_Was_Freed == true);
     printf("%s\n", success_Message);

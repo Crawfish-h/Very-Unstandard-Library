@@ -162,5 +162,6 @@ void TLinked_List_Free(TLinked_List* list)
         free(node);
     }
 
+    free(list->Super.Types);
     free(list);
 }
