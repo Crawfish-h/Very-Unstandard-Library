@@ -31,5 +31,3 @@ void TMap_Remove(TMap* map, TString* key);
 
 void* TMap_Get(void* map_Arg, TString* key);
 TPair* TMap_Get_Info(TMap* map, TString* key);
-
-void TMap_Free(TMap* map);

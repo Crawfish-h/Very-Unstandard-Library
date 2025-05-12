@@ -69,6 +69,13 @@ void Test_Container(TIterator* it)
     }
 }
 
+#define Test_Container_Free(container_Type, free_Fn) \
+    if (Compare_Types(container_Rtti, Rtti(container_Type))) \
+    { \
+        free_Fn((container_Type)container_Data); \
+        container_Was_Freed = true; \
+    }
+
 void Container_Test(TIterator* it, char* success_Message)
 {
     it->Add(it, 0, TG(char*, "A new string"));
@@ -98,6 +105,21 @@ void Container_Test(TIterator* it, char* success_Message)
 
     Test_Container(it);
     VUL_Assert(*it->Size == 6, "Actual size: %zu\n", *it->Size);
+    bool container_Was_Freed = false;
+    TRtti* container_Rtti = &it->Container.Rtti_;
+    void* container_Data = it->Container.Data;
+    if (Compare_Types(container_Rtti, Rtti(TMap*)))
+    {
+        TMap* map = it->Container.Data;
+        container_Rtti = &map->Other_It->Container.Rtti_;
+        container_Data = map->Other_It->Container.Data;
+    }
 
+    Test_Container_Free(TVector*, TVector_Free);
+    Test_Container_Free(TLinked_List*, TLinked_List_Free);
+    Test_Container_Free(TDoubly_Linked_List*, TDoubly_Linked_List_Free);
+    Test_Container_Free(TTree*, TTree_Free);
+
+    assert(container_Was_Freed == true);
     printf("%s\n", success_Message);
 }

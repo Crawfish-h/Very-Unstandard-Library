@@ -20,5 +20,5 @@ void TIterator_Init
     void (*add)(TIterator* it,int64_t index, TGeneric* value)
 );
 
-void TIterator_Remove(TIterator* it, int64_t index);
-void TIterator_Free(TIterator* it, int64_t index);
+// returns [true] if [element] was removed.
+bool TIterator_Remove(TIterator* it, int64_t index);

@@ -19,7 +19,7 @@ TGeneric TVector_Index_Get(TContainer* container, TGeneric* index);
 inline TGeneric TVector_Index_Get(TContainer* container, TGeneric* index)
 {
     TVector* vector = (TVector*)container;
-    return (TGeneric){ .Data = &vector->Elements[*(uint32_t*)index->Data], .Rtti_ = Rtti(TGeneric) };
+    return (TGeneric){ .Data = &vector->Elements[*(uint32_t*)index->Data], .Rtti_ = *Rtti(TGeneric) };
 }
 
 TGeneric TVector_Allocator_Free(TContainer* container)
@@ -162,7 +162,7 @@ void TVector_Clear(TVector* vector)
     TContainer* super = &vector->Super;
     for (uint32_t i = 0; i < super->Size; i++)
     {
-       TContainer_Remove_TGeneric_Element(&vector->Elements[i]);
+       TGeneric_Free(&vector->Elements[i]);
     }
 
     free(vector->Elements);
@@ -216,7 +216,7 @@ void TVector_Remove_At_Internal(TVector* vector, int64_t index, bool free_Alloca
             {
                 vector->Elements[index].Dtor(&vector->Elements[index]);
             }*/
-            TContainer_Remove_TGeneric_Element(&vector->Elements[index]);
+            TGeneric_Free(&vector->Elements[index]);
         }
 
         super->Size--;

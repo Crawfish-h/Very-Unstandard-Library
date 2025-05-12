@@ -1,4 +1,5 @@
 #include "TIterator.h"
+#include <string.h>
 
 void* TIterator_Get(TIterator* it, int64_t index)
 {
@@ -21,14 +22,16 @@ void TIterator_Init
     it->Get = TIterator_Get;
 }
 
-void TIterator_Remove(TIterator* it, uint index)
+bool TIterator_Remove(TIterator* it, int64_t index)
 {
     Index_Check(&index, *it->Size);
-
-    TGeneric_Free(it->Get_Info(it, index));
-    for (uint32_t i = index; i < *it->Size; i++)
+    bool was_Freed = TGeneric_Free(it->Get_Info(it, index));
+    for (uint32_t i = index; i < *it->Size - 1; i++)
     {
-        
+        *it->Get_Info(it, index) = *it->Get_Info(it, index + 1);
     }
-    
+
+    TGeneric_Free(it->Get_Info(it, *it->Size - 1));
+    *it->Size--;
+    return was_Freed;
 }
