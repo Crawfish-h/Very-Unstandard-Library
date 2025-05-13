@@ -32,6 +32,6 @@ bool TIterator_Remove(TIterator* it, int64_t index)
     }
 
     TGeneric_Free(it->Get_Info(it, *it->Size - 1));
-    *it->Size--;
+    *it->Size = *it->Size - 1;
     return was_Freed;
 }

@@ -10,8 +10,14 @@
 #include "TContainer.h"
 #include "TVector.h"
 
+void TMap_Validate_Size(TMap* map)
+{
+    if (*map->It.Size < *map->Other_It->Size) *map->Other_It->Size = *map->It.Size;
+}
+
 void TMap_Define_Add(TIterator* it, int64_t index, TGeneric* value)
 {
+    TMap_Validate_Size((TMap*)it->Container.Data);
     TString* key = TString_Dyn("index ");
 
     char index_Str[2];
@@ -33,7 +39,9 @@ void TMap_Define_Add(TIterator* it, int64_t index, TGeneric* value)
 
 TGeneric* TMap_Define_Get_Info(TIterator* it, int64_t index)
 {
+    
     TIterator* other_It = ((TMap*)it->Container.Data)->Other_It;
+    TMap_Validate_Size((TMap*)it->Container.Data);
     void* value = other_It->Get(other_It, index);
     return &((TPair*)value)->Second;
 }
@@ -83,6 +91,7 @@ bool TMap_Multi(TMap* map, uint32_t value_Count, ...)
     va_list arg_List;
     va_start(arg_List, value_Count);
     TContainer* super = &map->Super;
+    TMap_Validate_Size(map);
 
     for (uint32_t i = 0; i < value_Count; i++)
     {
@@ -121,6 +130,7 @@ bool TMap_Multi(TMap* map, uint32_t value_Count, ...)
 
 TPair* TMap_Get_Info(TMap* map, TString* key)
 {
+    TMap_Validate_Size(map);
     for (uint32_t i = 0; i < map->Super.Size; i++)
     {
         TPair* pair = map->Other_It->Get(map->Other_It, i);
@@ -137,11 +147,13 @@ TPair* TMap_Get_Info(TMap* map, TString* key)
 
 void* TMap_Get(void* map_Arg, TString* key)
 {
+    TMap_Validate_Size(map_Arg);
     return TMap_Get_Info(map_Arg, key)->Second.Data;
 }
 
 void TMap_Remove(TMap* map, TString* key)
 {
+    TMap_Validate_Size(map);
     for (uint32_t i = 0; i < *map->It.Size; i++)
     {
         TPair* pair = map->Other_It->Get(map->Other_It, i);
