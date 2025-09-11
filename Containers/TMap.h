@@ -28,7 +28,7 @@ bool TMap_Add(TMap* map, TPair* key_Value_Pair);
 bool TMap_Multi(TMap* map, uint32_t value_Count, ...);
 
 void* TMap_Get(void* map_Arg, TString* key);
-TPair* TMap_Get_Info(TMap* map, TString* key);
+const TPair* TMap_Get_Info(TMap* map, TString* key);
 
 void TMap_Remove(TMap* map, TString* key);
 void TMap_Free(TMap* map);

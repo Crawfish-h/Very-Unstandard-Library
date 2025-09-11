@@ -14,6 +14,10 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/TGeneric.c
     ${PROJECT_SOURCE_DIR}/TString.h
     ${PROJECT_SOURCE_DIR}/TString.c
+    ${PROJECT_SOURCE_DIR}/TVariant.h
+    ${PROJECT_SOURCE_DIR}/TVariant.c
+    ${PROJECT_SOURCE_DIR}/Containers/TTuple.h
+    ${PROJECT_SOURCE_DIR}/Containers/TTuple.c
     ${PROJECT_SOURCE_DIR}/Containers/TC_Allocator.h
     ${PROJECT_SOURCE_DIR}/Containers/TC_Allocator.c
     ${PROJECT_SOURCE_DIR}/Containers/TIterator.h

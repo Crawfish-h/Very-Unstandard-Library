@@ -129,7 +129,7 @@ void* TLinked_List_Get(TLinked_List* list, int64_t index)
     return TLinked_List_Get_Node(list, index)->Value.Data;
 }
 
-TGeneric* TLinked_List_Get_Info(TLinked_List* list, int64_t index)
+const TGeneric* TLinked_List_Get_Info(TLinked_List* list, int64_t index)
 {
     return &TLinked_List_Get_Node(list, index)->Value;
 }

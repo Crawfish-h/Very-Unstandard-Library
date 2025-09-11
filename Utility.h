@@ -84,3 +84,16 @@ typedef struct TMaybe
 #define LV(r_Value) (typeof(r_Value)[]){ r_Value }
 
 void Index_Check(int64_t* index, uint32_t max_Index_Val);
+
+#define Make_Dtor(function) \
+    TGeneric function ## _Dtor (TGeneric* arg) \
+    { \
+        function(arg->Data); \
+    }
+
+#define Expand(...) __VA_ARGS__
+
+// Gets the length/size of an array.
+#define Array_Length(...) (sizeof((__VA_ARGS__)) / sizeof((__VA_ARGS__)[0]))
+
+#define Args(...) __VA_ARGS__

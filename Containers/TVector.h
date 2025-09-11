@@ -44,5 +44,5 @@ void TVector_Pop(TVector* vector);
 // Removes the last element in the vector and returns it.
 TGeneric TVector_Pop1(TVector* vector); 
 
-TGeneric* TVector_Get_Info(TVector* vector, int64_t index);
+const TGeneric* TVector_Get_Info(TVector* vector, int64_t index);
 void* TVector_Get(TVector* vector, int64_t index);

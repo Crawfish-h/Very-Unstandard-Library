@@ -150,7 +150,7 @@ void* TDoubly_Linked_List_Get(TDoubly_Linked_List* list, int64_t index)
     return TDoubly_Linked_List_Get_Node(list, index)->Value.Data;
 }
 
-TGeneric* TDoubly_Linked_List_Get_Info(TDoubly_Linked_List* list, int64_t index)
+const TGeneric* TDoubly_Linked_List_Get_Info(TDoubly_Linked_List* list, int64_t index)
 {
     return &TDoubly_Linked_List_Get_Node(list, index)->Value;
 }

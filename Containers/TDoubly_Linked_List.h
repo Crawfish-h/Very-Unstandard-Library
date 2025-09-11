@@ -35,6 +35,6 @@ bool TDoubly_Linked_List_Multi(TDoubly_Linked_List* list, int64_t index, uint32_
 void* TDoubly_Linked_List_Get(TDoubly_Linked_List* list, int64_t index);
 
 // Returns the type information along with the data at [index].
-TGeneric* TDoubly_Linked_List_Get_Info(TDoubly_Linked_List* list, int64_t index);
+const TGeneric* TDoubly_Linked_List_Get_Info(TDoubly_Linked_List* list, int64_t index);
 
 void TDoubly_Linked_List_Free(TDoubly_Linked_List* list);

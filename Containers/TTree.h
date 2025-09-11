@@ -57,7 +57,7 @@ void TTree_Add_Define(TTree* tree, int64_t index, TGeneric* tree_Arg);
 void* TTree_Get(TTree* tree, int64_t index);
 
 // Returns the type information along with the data at [index].
-TGeneric* TTree_Get_Info(TTree* tree, int64_t index);
+const TGeneric* TTree_Get_Info(TTree* tree, int64_t index);
 
 // Returns the data at [index] using a [TVector].
 void* TTree_Vector_Get(TTree* tree, int64_t index);

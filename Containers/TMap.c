@@ -128,7 +128,7 @@ bool TMap_Multi(TMap* map, uint32_t value_Count, ...)
     va_end(arg_List);
 }
 
-TPair* TMap_Get_Info(TMap* map, TString* key)
+const TPair* TMap_Get_Info(TMap* map, TString* key)
 {
     TMap_Validate_Size(map);
     for (uint32_t i = 0; i < map->Super.Size; i++)

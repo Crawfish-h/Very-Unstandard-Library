@@ -113,6 +113,8 @@ void Test_Container_Remove(TIterator* it)
         container_Was_Freed = true; \
     }
 
+Make_Dtor(TVector_Free)
+
 void Container_Test(TIterator* it, char* success_Message)
 {
     it->Add(it, 0, TG(char*, "A new string"));
@@ -120,7 +122,10 @@ void Container_Test(TIterator* it, char* success_Message)
     it->Add(it, 2, TG(TString, NT_TString("www.website.com")));
     it->Add(it, 3, TG(int, LV(90007)));
     it->Add(it, 4, TG(TRtti, Rtti(int)));
-    it->Add(it, 3, TG(TVector*, TVector_Init(1, 1, Rtti(TString), TG(TString, NT_TString("TString inside a TVector")))));
+    TGeneric* vec_Tg = TG(TVector*, TVector_Init(1, 1, Rtti(TString), TG(TString, NT_TString("TString inside a TVector"))));
+    vec_Tg->Is_Allocated = true;
+    vec_Tg->Dtor = TVector_Free_Dtor;
+    it->Add(it, 3, vec_Tg);
     it->Get_Info(it, 3)->Is_Allocated = false;
 
     for (uint32_t i = 0; i < 6; i++)

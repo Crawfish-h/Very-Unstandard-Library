@@ -144,7 +144,7 @@ void* TTree_Get(TTree* tree, int64_t index)
     return TTree_Get_Node_DFS(tree, index)->Value.Data;
 }
 
-TGeneric* TTree_Get_Info(TTree* tree, int64_t index)
+const TGeneric* TTree_Get_Info(TTree* tree, int64_t index)
 {
     return &TTree_Get_Node_DFS(tree, index)->Value;
 }

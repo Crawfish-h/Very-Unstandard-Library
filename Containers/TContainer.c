@@ -88,7 +88,7 @@ uint32_t TContainer_Type_Capacity(TContainer* container)
 
 void* TContainer_Array_Alloc_Again(TContainer* container, uint32_t new_Capacity, TGeneric* arg)
 {
-    void* container_Elements = container->Allocator.Calloc(new_Capacity, (uint32_t)arg->Data);
+    void* container_Elements = container->Allocator.Calloc(new_Capacity, *(uint32_t*)arg->Data);
     memcpy(container_Elements, *container->Data_Ptr, container->Capacity - 1);
     free(*container->Data_Ptr);
     *container->Data_Ptr = container_Elements;

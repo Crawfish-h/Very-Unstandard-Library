@@ -34,6 +34,6 @@ bool TLinked_List_Multi(TLinked_List* list, int64_t index, uint32_t value_Count,
 void* TLinked_List_Get(TLinked_List* list, int64_t index);
 
 // Returns the type information along with the data at [index].
-TGeneric* TLinked_List_Get_Info(TLinked_List* list, int64_t index);
+const TGeneric* TLinked_List_Get_Info(TLinked_List* list, int64_t index);
 
 void TLinked_List_Free(TLinked_List* list);

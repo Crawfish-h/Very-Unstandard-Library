@@ -1,6 +1,7 @@
 #pragma once
 #include "TGeneric.h"
 
+// A Struct that contains
 typedef struct TPair
 {
     TGeneric First;

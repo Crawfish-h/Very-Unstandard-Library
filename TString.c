@@ -133,18 +133,3 @@ TString TString_Str_Str(TString* string, TString* sub_String)
 
     return (TString){ 0 };
 }
-
-// Correct varargs and order: [TString*], [TString*].
-// Returns [TGeneric.Type = bool];
-TGeneric TString_Equal_Overload(int arg_Count, ...)
-{
-    va_list varargs;
-    va_start(varargs, arg_Count);
-    bool result = TString_Equal(va_arg(varargs, TString*), va_arg(varargs, TString*));
-    return (TGeneric)
-    { 
-        .Data = &result,
-        .Rtti_ = *Rtti(bool),
-        .Is_Allocated = false,
-    };
-}

@@ -254,7 +254,7 @@ TGeneric TVector_Pop1(TVector* vector)
     return return_Gen;
 }
 
-TGeneric* TVector_Get_Info(TVector* vector, int64_t index)
+const TGeneric* TVector_Get_Info(TVector* vector, int64_t index)
 {
     return &vector->Elements[index];
 }
