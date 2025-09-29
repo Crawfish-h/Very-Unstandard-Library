@@ -36,6 +36,7 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/Containers/TMap.c
     ${PROJECT_SOURCE_DIR}/Unit_Tests/Unit_Tests.h
     ${PROJECT_SOURCE_DIR}/Unit_Tests/Unit_Tests.c
+    ${PROJECT_SOURCE_DIR}/Examples/Examples.c
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE -fms-extensions)

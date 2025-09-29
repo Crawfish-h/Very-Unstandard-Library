@@ -97,3 +97,10 @@ void Index_Check(int64_t* index, uint32_t max_Index_Val);
 #define Array_Length(...) (sizeof((__VA_ARGS__)) / sizeof((__VA_ARGS__)[0]))
 
 #define Args(...) __VA_ARGS__
+
+// for (uint32_t vul_Int_Iter_Var_0 = 0; type* name = NULL; vul_Int_Iter_Var_0 < *container->It.Size; i++; name = container->It->Get_Info(it, vul_Int_Iter_Var_0))
+#define For_Each(type, name, container) \
+    for (uint32_t vul_Int_Iter_Var_0 = 0, vul_Int_Iter_cond_0 = 1; vul_Int_Iter_Var_0 < *container->It.Size; vul_Int_Iter_cond_0 = !vul_Int_Iter_cond_0, vul_Int_Iter_Var_0++) \
+        for (type* name = container->It.Get_Info(&container->It, vul_Int_Iter_Var_0)->Data; vul_Int_Iter_cond_0; vul_Int_Iter_cond_0 = 0)
+
+typedef unsigned char Byte;

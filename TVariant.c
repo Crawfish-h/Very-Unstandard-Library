@@ -6,6 +6,8 @@ TVariant* TVariant_Init_Function_Internal(TVariant* variant, Array_Of(TRtti) typ
 {
     variant->Types_ = types;
     variant->Type_Count_ = type_Count;
+
+    Type_Check(&value->Rtti_.Type, variant->Types_, variant->Type_Count_);
     TGeneric_Add_If_Pointer(&variant->Value_, value);
 
     return variant;
@@ -23,6 +25,7 @@ void* TVariant_Get(TVariant* variant)
 
 void TVariant_Set(TVariant* variant, TGeneric* value)
 {
+    Type_Check(&value->Rtti_.Type, variant->Types_, variant->Type_Count_);
     TGeneric_Add_If_Pointer(&variant->Value_, value);
 }
 

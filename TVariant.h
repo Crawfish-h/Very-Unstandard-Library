@@ -10,8 +10,8 @@ typedef struct TVariant
 
 TVariant* TVariant_Init_Function_Internal(TVariant* variant, Array_Of(TRtti) types, uint32_t type_Count, TGeneric* value);
 
-#define TVariant_Init(vairnat, rtti_Args, value) \
-    TVariant_Init_Function_Internal(&variant, (TRtti[]){rtti_Args}, (sizeof((TRtti[]){rtti_Args}) / sizeof((TRtti[]){rtti_Args}[0])), value)
+#define TVariant_Init(rtti_Args, value) \
+    TVariant_Init_Function_Internal(&(TVariant){}, (TRtti[]){rtti_Args}, (sizeof((TRtti[]){rtti_Args}) / sizeof((TRtti[]){rtti_Args}[0])), value)
     //{ (TRtti[]){rtti_Args}, (sizeof((TRtti[]){rtti_Args}) / sizeof((TRtti[]){rtti_Args}[0])), value }; 
 
 const TRtti* TVariant_Get_Type(TVariant* variant, uint32_t index);

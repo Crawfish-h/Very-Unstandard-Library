@@ -119,6 +119,8 @@ void TVector_Add_At(TVector* vector, int64_t index, TGeneric* value)
 {
     TContainer* super = &vector->Super;
 
+    Index_Check(&index, vector->Super.Size);
+
     if (index < super->Size)
     {
         Type_Check(&value->Rtti_.Type, super->Types, super->Type_Count);
@@ -256,6 +258,7 @@ TGeneric TVector_Pop1(TVector* vector)
 
 const TGeneric* TVector_Get_Info(TVector* vector, int64_t index)
 {
+    Index_Check(&index, vector->Super.Size);
     return &vector->Elements[index];
 }
 
